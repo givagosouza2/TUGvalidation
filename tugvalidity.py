@@ -171,6 +171,17 @@ with tab_map["Kinematics"]:
         sit_adj    = [clamp(v + st.session_state["adj_sit"].get(i,0.0),   t_min, t_max) for i,v in enumerate(sit_times)]
         peak_adj   = [clamp(v + st.session_state["adj_peaks"].get(i,0.0), t_min, t_max) for i,v in enumerate(peak_times)]
 
+        # --- GRÁFICO DE TRIGGER (KINEMÁTICA) ---
+        st.markdown("**Trigger — Cinemática (t = 0)**")
+        fig_trig_kin, ax_trig_kin = plt.subplots(figsize=(10, 2))
+        nwin = min(2000, len(t))
+        ax_trig_kin.plot(t[:nwin], disp_z[:nwin], 'k-', label="disp_z")
+        ax_trig_kin.axvline(0, color='r', label="t=0")
+        ax_trig_kin.set_xlabel("Tempo (s)")
+        ax_trig_kin.set_ylabel("Amplitude (m)")
+        ax_trig_kin.legend(loc="lower left")
+        st.pyplot(fig_trig_kin)
+
         # PLOT 1 (coluna do meio): disp_y + marcações
         with c_plot1:
             fig2, ax2 = plt.subplots(figsize=(10, 4))
@@ -330,6 +341,17 @@ if st.session_state.show_dyn_tabs:
             offset_acc_adj = [clamp(v + st.session_state["adj_offset_acc"].get(i,0.0), t_min_acc, t_max_acc) for i,v in enumerate(offset_acc_t)]
             peaks_acc_adj  = [clamp(v + st.session_state["adj_peak_acc"].get(i,0.0),  t_min_acc, t_max_acc) for i,v in enumerate(peaks_acc_t)]
 
+            # --- GRÁFICO DE TRIGGER (ACELERAÇÃO) ---
+            st.markdown("**Trigger — Aceleração (t = 0)**")
+            fig_trig_acc, ax_trig_acc = plt.subplots(figsize=(10, 2))
+            nwin_acc = min(2000, len(t_acc))
+            ax_trig_acc.plot(t_acc[:nwin_acc], sig[:nwin_acc], 'k-', label=axis_acc)
+            ax_trig_acc.axvline(0, color='r', label="t=0")
+            ax_trig_acc.set_xlabel("Tempo (s)")
+            ax_trig_acc.set_ylabel("Aceleração")
+            ax_trig_acc.legend(loc="lower left")
+            st.pyplot(fig_trig_acc)
+
             with c_plot1:
                 figA, axA = plt.subplots(figsize=(10,4))
                 axA.plot(t_acc, sig, 'k-', label=f"{axis_acc}")
@@ -367,6 +389,8 @@ if st.session_state.show_dyn_tabs:
                 axE.set_xlabel("Tempo (s)"); axE.set_ylabel("Aceleração")
                 axE.legend(loc="lower left")
                 st.pyplot(figE)
+        else:
+            st.info("Carregue um arquivo de aceleração para visualizar.")
 
     with tab_map["Angular velocity"]:
         st.write("Conteúdo de Angular velocity (a definir).")
