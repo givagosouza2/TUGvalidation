@@ -143,6 +143,11 @@ with tab1:
                             label='Fim' if i == 0 else "")
                 ax2.axvspan(t_onset, t_offset, color='gray', alpha=0.3,
                             label='Teste' if i == 0 else "")
+                #    # Linha tracejada: início
+                ax2.axvline(standing_time[i], linestyle='--', color='red',
+                           label='Início da queda' if i == 0 else "")
+                ax2.axvline(sitting_time[i], linestyle='--', color='black',
+                           label='Início da queda' if i == 0 else "")
 
                 if i + 1 < num_ciclos:
                     t_next_onset = time_original_kinem[onsets[i + 1]]
