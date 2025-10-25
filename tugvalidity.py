@@ -169,8 +169,8 @@ with tab_map["Kinematics"]:
             def _get(store, idx):
                 return float(store.get(idx, 0.0))
 
-            d_on = st.sidebar.number_input("Δ Onset (s)", -2.0, 2.0, _get(st.session_state.adj_onset, sel_cycle), 0.01)
-            d_off = st.sidebar.number_input("Δ Offset (s)", -2.0, 2.0, _get(st.session_state.adj_offset, sel_cycle), 0.01)
+            d_on = st.sidebar.number_input("Δ Início (s)", -2.0, 2.0, _get(st.session_state.adj_onset, sel_cycle), 0.01)
+            d_off = st.sidebar.number_input("Δ Final (s)", -2.0, 2.0, _get(st.session_state.adj_offset, sel_cycle), 0.01)
             d_st = st.sidebar.number_input("Δ Pico em pé (s)", -2.0, 2.0, _get(st.session_state.adj_stand, sel_cycle), 0.01)
             d_si = st.sidebar.number_input("Δ Pico para sentar (s)", -2.0, 2.0, _get(st.session_state.adj_sit, sel_cycle), 0.01)
 
@@ -195,10 +195,10 @@ with tab_map["Kinematics"]:
         # Ajustes por pico (mínimos)
         if len(peaks) > 0:
             sel_peak = st.sidebar.number_input(
-                "Pico (mínimo) a ajustar (0-index)", min_value=0, max_value=len(peaks) - 1, value=0, step=1
+                "Pico (3 m) a ajustar (0-index)", min_value=0, max_value=len(peaks) - 1, value=0, step=1
             )
             curr_peak_delta = float(st.session_state.adj_peaks.get(sel_peak, 0.0))
-            d_pk = st.sidebar.number_input("Δ Mínimo (s)", -2.0, 2.0, curr_peak_delta, 0.01)
+            d_pk = st.sidebar.number_input("Δ 3 m (s)", -2.0, 2.0, curr_peak_delta, 0.01)
             st.session_state.adj_peaks[sel_peak] = d_pk
 
             if st.sidebar.button("Reset pico selecionado"):
