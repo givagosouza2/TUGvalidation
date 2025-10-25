@@ -99,6 +99,22 @@ with tab1:
             if found_offset is not None:
                 offsets.append(found_offset)
 
+            standing_time = []
+            for values in onsets:
+                for idx, i in enumerate(disp_z[values:values+200]):
+                    if i == max(disp_z[values:values+200]):
+                        standing_time.append(
+                            time_original_kinem[values+idx])
+                        break
+
+            sitting_time = []
+            for values in offsets:
+                for idx, i in enumerate(disp_z[values-400:values]):
+                    if i == max(disp_z[values-400:values]):
+                        sitting_time.append(
+                            time_original_kinem[values-400+idx])
+                        break
+
         num_ciclos = min(len(onsets), len(offsets))
 
         # --------- Plot 1: disp_z (janela inicial) ----------
