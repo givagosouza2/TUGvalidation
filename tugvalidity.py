@@ -189,7 +189,7 @@ with tab1:
 
             ax3.set_xlabel("Tempo (s)")
             ax3.set_ylabel("Amplitude (m)")
-            ax3.legend()
+            ax3.legend(loc="lower left")
             st.pyplot(fig3)
 
         # Resumo quantitativo
