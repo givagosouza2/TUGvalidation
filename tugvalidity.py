@@ -319,12 +319,12 @@ if st.session_state.show_dyn_tabs:
             time_interpolated, acc_x_interpolated = time_/1000, x_
             interpf = scipy.interpolate.interp1d(t_acc, ay)
             time_ = np.arange(
-                start=t_acc[0], stop=tempo[len(t_acc)-1], step=10)
+                start=t_acc[0], stop=t_acc[len(t_acc)-1], step=10)
             y_ = interpf(time_)
             time_interpolated, acc_y_interpolated = time_/1000, y_
             interpf = scipy.interpolate.interp1d(t_acc, az)
             time_ = np.arange(
-                start=t_acc[0], stop=tempo[len(t_acc)-1], step=10)
+                start=t_acc[0], stop=t_acc[len(t_acc)-1], step=10)
             z_ = interpf(time_)
             time_interpolated, acc_z_interpolated = time_/1000, z_
 
