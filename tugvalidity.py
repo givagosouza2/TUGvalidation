@@ -137,6 +137,17 @@ with tab_map["Kinematics"]:
             disp_y = low_pass_filter(disp_y, cutoff_kinem, fs)
             disp_z = low_pass_filter(disp_z, cutoff_kinem, fs)
 
+        # --- GRÁFICO DE TRIGGER (KINEMÁTICA) ---
+        st.markdown("**Trigger — Cinemática (t = 0)**")
+        fig_trig_kin, ax_trig_kin = plt.subplots(figsize=(10, 2))
+        nwin = min(2000, len(t))
+        ax_trig_kin.plot(t[:nwin], disp_z[:nwin], 'k-', label="disp_z")
+        ax_trig_kin.axvline(0, color='r', label="t=0")
+        ax_trig_kin.set_xlabel("Tempo (s)")
+        ax_trig_kin.set_ylabel("Amplitude (m)")
+        ax_trig_kin.legend(loc="lower left")
+        st.pyplot(fig_trig_kin)
+
         pk_kwargs = {}
         if prominence > 0: pk_kwargs["prominence"] = float(prominence)
         if min_distance_samples > 1: pk_kwargs["distance"] = int(min_distance_samples)
@@ -170,18 +181,7 @@ with tab_map["Kinematics"]:
         stand_adj  = [clamp(v + st.session_state["adj_stand"].get(i,0.0), t_min, t_max) for i,v in enumerate(stand_times)]
         sit_adj    = [clamp(v + st.session_state["adj_sit"].get(i,0.0),   t_min, t_max) for i,v in enumerate(sit_times)]
         peak_adj   = [clamp(v + st.session_state["adj_peaks"].get(i,0.0), t_min, t_max) for i,v in enumerate(peak_times)]
-
-        # --- GRÁFICO DE TRIGGER (KINEMÁTICA) ---
-        st.markdown("**Trigger — Cinemática (t = 0)**")
-        fig_trig_kin, ax_trig_kin = plt.subplots(figsize=(10, 2))
-        nwin = min(2000, len(t))
-        ax_trig_kin.plot(t[:nwin], disp_z[:nwin], 'k-', label="disp_z")
-        ax_trig_kin.axvline(0, color='r', label="t=0")
-        ax_trig_kin.set_xlabel("Tempo (s)")
-        ax_trig_kin.set_ylabel("Amplitude (m)")
-        ax_trig_kin.legend(loc="lower left")
-        st.pyplot(fig_trig_kin)
-
+        
         # PLOT 1 (coluna do meio): disp_y + marcações
         with c_plot1:
             fig2, ax2 = plt.subplots(figsize=(10, 4))
