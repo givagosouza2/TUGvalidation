@@ -245,7 +245,7 @@ if st.session_state.show_dyn_tabs:
         with c_ctrl:
             st.subheader("Controles — Aceleração")
             uploaded_file_acc = st.file_uploader(
-                "Arquivo (.csv: [tempo?], ax, ay, az)", type=["csv"], key="acc_file"
+                "Arquivo (.txt: [tempo], ax, ay, az)", type=["csv"], key="acc_file"
             )
 
             st.markdown("**Pré-processamento**")
