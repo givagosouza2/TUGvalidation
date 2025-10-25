@@ -249,7 +249,40 @@ if st.session_state.show_dyn_tabs:
             uploaded_file_acc = st.file_uploader(
                 "Arquivo (.txt: [tempo], ax, ay, az)", type=["txt"], key="acc_file"
             )
+            st.markdown("**Pré-processamento**")
+            do_detrend_acc = st.checkbox("Aplicar detrend", value=False, key="acc_detrend")
+            do_filter_acc  = st.checkbox("Aplicar filtro passa-baixa", value=True, key="acc_filt")
+            cutoff_acc = st.number_input("Cutoff (Hz)", 0.1, 50.0, 6.0, 0.1, key="acc_cutoff")
 
+            st.markdown("**Tempo / Amostragem**")
+            fs_acc = st.number_input("Frequência de amostragem (Hz)", 1.0, 2000.0, 100.0, 1.0, key="acc_fs")
+            trigger_acc = st.number_input("Trigger (s)", -5.0, 5.0, 0.0, 0.01, key="acc_trig")
+
+            st.markdown("**Detecção de eventos**")
+            axis_acc = st.selectbox("Eixo para eventos", ["ax", "ay", "az"], index=2, key="acc_axis")
+            prominence_acc = st.number_input("Prominence mínima", 0.0, 1000.0, 2.5, 0.1, key="acc_prom")
+            min_distance_samples_acc = st.number_input("Distância mínima (amostras)", 1, 10000, 200, 1, key="acc_dist")
+
+            st.markdown("**Ajustes finos**")
+            sel_cycle_acc = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="acc_sel_cycle")
+            d_on_acc  = st.number_input("Δ Onset (s)",  -2.0, 2.0, float(st.session_state["adj_onset_acc"].get(sel_cycle_acc, 0.0)), 0.01, key="acc_don")
+            d_off_acc = st.number_input("Δ Offset (s)", -2.0, 2.0, float(st.session_state["adj_offset_acc"].get(sel_cycle_acc, 0.0)), 0.01, key="acc_doff")
+            st.session_state["adj_onset_acc"][sel_cycle_acc] = d_on_acc
+            st.session_state["adj_offset_acc"][sel_cycle_acc] = d_off_acc
+
+            sel_peak_acc = st.number_input("Pico (mínimo) 0-index", 0, 9999, 0, 1, key="acc_sel_peak")
+            d_pk_acc = st.number_input("Δ Mínimo (s)", -2.0, 2.0, float(st.session_state["adj_peak_acc"].get(sel_peak_acc, 0.0)), 0.01, key="acc_dpk")
+            st.session_state["adj_peak_acc"][sel_peak_acc] = d_pk_acc
+
+            rc1, rc2 = st.columns(2)
+            if rc1.button("Reset ciclo (acc)"):
+                st.session_state["adj_onset_acc"].pop(sel_cycle_acc, None)
+                st.session_state["adj_offset_acc"].pop(sel_cycle_acc, None)
+            if rc2.button("Reset tudo (acc)"):
+                st.session_state["adj_onset_acc"].clear()
+                st.session_state["adj_offset_acc"].clear()
+                st.session_state["adj_peak_acc"].clear()
+                
             if uploaded_file_acc is not None:
                 # 1) Leitura robusta (auto-separador)
                 df_acc = pd.read_csv(uploaded_file_acc, sep=None, engine="python")
