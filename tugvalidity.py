@@ -105,21 +105,4 @@ with tab1:
         ax.set_ylabel("Amplitude")
         st.pyplot(fig)
         
-        fig, ax = plt.subplots(figsize=(10, 4))
-        ax.plot(
-        time_interpolated[0:2000], acc_norm_filtered[0:2000], 'k-')
-        
-        ax.plot([0, 0], [0, 30], 'r--')
-        ax.set_xlabel("Tempo (s)")
-        ax.set_ylabel("Amplitude")
-        st.pyplot(fig)
-        
-        fig, ax = plt.subplots(figsize=(10, 4))
-        ax.plot(
-        time_interpolated_gyro[0:2000],  gyro_norm_filtered[0:2000], 'k-')
-        ax.plot([0, 0], [0, 2], 'r-')
-        ax.set_xlabel("Tempo (s)")
-        ax.set_ylabel("Amplitude")
-        st.pyplot(fig)
-
-        
+                
