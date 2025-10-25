@@ -347,7 +347,7 @@ if st.session_state.show_dyn_tabs:
                 ax_trig_acc.legend(loc="lower left")
                 st.pyplot(fig_trig_acc)
 
-                c_plot11, c_plot12 = st.collumns(2)
+                c_plot11, c_plot12 = st.columns(2)
                 with c_plot11:
                     signal = ay**2
                     fig_vert_acc, ax_vert_acc = plt.subplots(figsize=(10, 2))
