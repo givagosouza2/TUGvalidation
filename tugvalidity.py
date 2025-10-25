@@ -308,13 +308,6 @@ if st.session_state.show_dyn_tabs:
             t_acc = t_acc - trigger_acc
             t_min_acc, t_max_acc = t_acc[0], t_acc[-1]
 
-            if do_detrend_acc:
-                ax = detrend(ax); ay = detrend(ay); az = detrend(az)
-            if do_filter_acc:
-                ax = low_pass_filter(ax, cutoff_acc, fs_acc)
-                ay = low_pass_filter(ay, cutoff_acc, fs_acc)
-                az = low_pass_filter(az, cutoff_acc, fs_acc)
-
             # aceleração
             new_fs = 100
             interpf = scipy.interpolate.interp1d(t_acc, ax)
@@ -333,28 +326,22 @@ if st.session_state.show_dyn_tabs:
             z_ = interpf(time_)
             time_interpolated, acc_z_interpolated = time_/1000, z_
 
-            acc_x_detrended = detrend(acc_x_interpolated)
-            acc_y_detrended = detrend(acc_y_interpolated)
-            acc_z_detrended = detrend(acc_z_interpolated)
 
-            # Filtro passa-baixa (10 Hz)
-            cutoff = 2.5  # Frequência de corte
-            acc_x_filtered = low_pass_filter(
-                acc_x_detrended, cutoff, new_fs)
-            acc_y_filtered = low_pass_filter(
-                acc_y_detrended, cutoff, new_fs)
-            acc_z_filtered = low_pass_filter(
-                acc_z_detrended, cutoff, new_fs)
-            acc_norm_filtered = np.sqrt(
-                acc_x_filtered**2+acc_y_filtered**2+acc_z_filtered**2)
+            if do_detrend_acc:
+                ax = detrend(acc_x_interpolated); ay = detrend(acc_y_interpolated); az = detrend(acc_z_interpolated)
+            if do_filter_acc:
+                ax = low_pass_filter(ax, cutoff_acc, fs_acc)
+                ay = low_pass_filter(ay, cutoff_acc, fs_acc)
+                az = low_pass_filter(az, cutoff_acc, fs_acc)
 
+            
+            
             
             with c_plot1:
                 # --- GRÁFICO DE TRIGGER (ACELERAÇÃO) ---
                 st.markdown("**Trigger — Aceleração (t = 0)**")
                 fig_trig_acc, ax_trig_acc = plt.subplots(figsize=(10, 2))
-                nwin_acc = min(2000, len(t_acc))
-                ax_trig_acc.plot(t_acc[:5000], acc_y_filtered[:5000], 'k-', label=axis_acc)
+                ax_trig_acc.plot(t_acc[:5000], ay[:5000], 'k-', label= 'acc V')
                 ax_trig_acc.axvline(0, color='r', label="t=0")
                 ax_trig_acc.set_xlabel("Tempo (s)")
                 ax_trig_acc.set_ylabel("Aceleração")
