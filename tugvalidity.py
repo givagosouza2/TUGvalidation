@@ -315,8 +315,49 @@ with tab_map["Kinematics"]:
             f"• Offsets: {len(offsets)}  \n"
             f"• Ciclos válidos: {num_ciclos}"
         )
+        import math
+
+        rows = []
+        for i in range(num_ciclos):
+            t_on  = onset_times_adj[i]
+            t_off = offset_times_adj[i]
+            t_st  = stand_times_adj[i] if i < len(stand_times_adj) else np.nan
+            t_si  = sit_times_adj[i]   if i < len(sit_times_adj)   else np.nan
+        
+            # mínimos dentro do intervalo do ciclo
+            mins_in_window = [t for t in peak_times_adj if t_on <= t <= t_off]
+            t_min = mins_in_window[0] if len(mins_in_window) > 0 else np.nan
+        
+            rows.append({
+                "ciclo": i,
+                "onset_s": t_on,
+                "offset_s": t_off,
+                "pico_em_pe_s": t_st,
+                "pico_para_sentar_s": t_si,
+                "minimo_s": t_min
+            })
+        
+        df_tempos = pd.DataFrame(rows, columns=[
+            "ciclo", "onset_s", "offset_s", "pico_em_pe_s", "pico_para_sentar_s", "minimo_s"
+        ])
+        
+        # Guarda no estado (útil para outras abas/exports futuros)
+        st.session_state["cinem_df_tempos"] = df_tempos.copy()
+        
+        st.subheader("Tempos por ciclo (cinemática)")
+        st.dataframe(df_tempos, use_container_width=True)
+        
+        # Download CSV
+        csv_bytes = df_tempos.to_csv(index=False).encode("utf-8")
+        st.download_button(
+            label="Baixar CSV de tempos (cinemática)",
+            data=csv_bytes,
+            file_name="tempos_ciclos_cinematica.csv",
+            mime="text/csv",
+        )
     else:
         st.warning("Faça upload de um arquivo para ver os resultados de cinemática.")
+        
 
 # ------------------------
 # Abas extras (aparecem após o clique)
