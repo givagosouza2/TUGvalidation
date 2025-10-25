@@ -132,7 +132,7 @@ with tab1:
 
         with col1:
             fig2, ax2 = plt.subplots(figsize=(10, 4))
-            ax2.plot(time_original_kinem, disp_y, 'k-', label="Deslocamento AP")
+            ax2.plot(time_original_kinem, disp_y, 'k-', label="Desloc. AP")
 
             for i in range(num_ciclos):
                 t_onset = time_original_kinem[onsets[i]]
@@ -163,7 +163,7 @@ with tab1:
 
         with col2:
             fig3, ax3 = plt.subplots(figsize=(10, 4))
-            ax3.plot(time_original_kinem, disp_z, 'k-', label="Deslocamento vertical")
+            ax3.plot(time_original_kinem, disp_z, 'k-', label="Desloc. vertical")
 
             for i in range(num_ciclos):
                 t_onset = time_original_kinem[onsets[i]]
