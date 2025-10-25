@@ -284,7 +284,7 @@ if st.session_state.show_dyn_tabs:
 
         # Processamento e visualização
         if uploaded_file_acc is not None:
-            df_acc = pd.read_csv(uploaded_file_acc, sep=",", engine="python")
+            df_acc = pd.read_csv(uploaded_file_acc, sep=";", engine="python")
             if df_acc.shape[1] >= 4:
                 try:
                     t_acc = df_acc.iloc[:,0].astype(float).values
