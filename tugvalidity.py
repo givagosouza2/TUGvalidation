@@ -163,7 +163,7 @@ with tab1:
 
         with col2:
             fig3, ax3 = plt.subplots(figsize=(10, 4))
-            ax3.plot(time_original_kinem, disp_z, 'k-', label="disp_z")
+            ax3.plot(time_original_kinem, disp_z, 'k-', label="Deslocamento vertical")
 
             for i in range(num_ciclos):
                 t_onset = time_original_kinem[onsets[i]]
@@ -174,18 +174,18 @@ with tab1:
                 ax3.axvline(t_offset, linestyle='--', color='green',
                             label='Fim' if i == 0 else "")
                 ax3.axvspan(t_onset, t_offset, color='gray', alpha=0.3,
-                            label='Fase teste' if i == 0 else "")
+                            label='Teste' if i == 0 else "")
 
                 if i < len(standing_time):
                     ax3.axvline(standing_time[i], linestyle='--', color='red',
                                 label='Pico em pé' if i == 0 else "")
                 if i < len(sitting_time):
                     ax3.axvline(sitting_time[i], linestyle='--', color='black',
-                                label='Pico sentado' if i == 0 else "")
+                                label='Pico para sentar' if i == 0 else "")
 
             for k, t in enumerate(time_original_kinem[peaks]):
                 ax3.axvline(t, linestyle='--', color='blue',
-                            label='Mínimos' if k == 0 else "")
+                            label='3 m' if k == 0 else "")
 
             ax3.set_xlabel("Tempo (s)")
             ax3.set_ylabel("Amplitude (m)")
