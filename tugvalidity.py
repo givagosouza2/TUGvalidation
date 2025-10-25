@@ -104,5 +104,15 @@ with tab1:
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Amplitude")
         st.pyplot(fig)
+        col1,col2 = st.columns(2)
+        with col1:
+            fig, ax = plt.subplots(figsize=(10, 4))
+            ax.plot(
+                time_original_kinem[0:2000], disp_z[0:2000], 'k-')
+            ax.plot([0, 0], [0, 2], 'r-')
+            ax.set_xlabel("Tempo (s)")
+            ax.set_ylabel("Amplitude")
+            st.pyplot(fig)
+
         
                 
