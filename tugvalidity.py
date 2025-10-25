@@ -337,9 +337,10 @@ if st.session_state.show_dyn_tabs:
             
             with c_plot1:
                 # --- GRÁFICO DE TRIGGER (ACELERAÇÃO) ---
+                trigger = ay**2
                 st.markdown("**Trigger — Aceleração (t = 0)**")
                 fig_trig_acc, ax_trig_acc = plt.subplots(figsize=(10, 2))
-                ax_trig_acc.plot(t_acc[:5000], ay[:5000], 'k-', label= 'acc V')
+                ax_trig_acc.plot(t_acc[:500], trigger[:500], 'k-', label= 'acc V')
                 ax_trig_acc.axvline(0, color='r', label="t=0")
                 ax_trig_acc.set_xlabel("Tempo (s)")
                 ax_trig_acc.set_ylabel("Aceleração")
