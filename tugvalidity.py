@@ -135,6 +135,7 @@ with tab1:
     
                 ax.set_xlabel("Tempo (s)")
                 ax.set_ylabel("Amplitude")
+                ax.legend()
                 
                 st.pyplot(fig)
 
