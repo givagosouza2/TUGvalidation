@@ -183,6 +183,13 @@ with tab1:
                 # Faixa entre onset e offset
                 ax.axvspan(t_onset, t_offset, color='gray', alpha=0.3,
                            label='Fase de queda' if i == 0 else "")
+
+                #    # Linha tracejada: início
+                ax.axvline(standing_time[i], linestyle='--', color='red',
+                           label='Início da queda' if i == 0 else "")
+                ax.axvline(sitting_time[i], linestyle='--', color='black',
+                           label='Início da queda' if i == 0 else "")
+
                 
                 # Se houver um próximo ciclo, pinta o intervalo entre o offset atual e o próximo onset
                 if i + 1 < num_ciclos:
