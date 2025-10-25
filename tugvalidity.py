@@ -240,13 +240,15 @@ with tab_map["Kinematics"]:
 # =========================
 if st.session_state.show_dyn_tabs:
     with tab_map["Acceleration"]:
-        c_ctrl, c_plot1, c_plot2 = st.columns([1.2, 2, 2])
+        c_ctrl, c_plot1 = st.columns([0.7, 2])
 
         with c_ctrl:
             st.subheader("Controles — Aceleração")
             uploaded_file_acc = st.file_uploader(
                 "Arquivo (.txt: [tempo], ax, ay, az)", type=["txt"], key="acc_file"
             )
+
+            trigger_acc = st.number_input("Trigger (s)", -5.0, 5.0, 0.0, 0.01, key="acc_trig")
 
             st.markdown("**Pré-processamento**")
             do_detrend_acc = st.checkbox("Aplicar detrend", value=False, key="acc_detrend")
@@ -255,8 +257,7 @@ if st.session_state.show_dyn_tabs:
 
             st.markdown("**Tempo / Amostragem**")
             fs_acc = st.number_input("Frequência de amostragem (Hz)", 1.0, 2000.0, 100.0, 1.0, key="acc_fs")
-            trigger_acc = st.number_input("Trigger (s)", -5.0, 5.0, 0.0, 0.01, key="acc_trig")
-
+            
             st.markdown("**Detecção de eventos**")
             axis_acc = st.selectbox("Eixo para eventos", ["ax", "ay", "az"], index=2, key="acc_axis")
             prominence_acc = st.number_input("Prominence mínima", 0.0, 1000.0, 2.5, 0.1, key="acc_prom")
@@ -314,81 +315,54 @@ if st.session_state.show_dyn_tabs:
                 ay = low_pass_filter(ay, cutoff_acc, fs_acc)
                 az = low_pass_filter(az, cutoff_acc, fs_acc)
 
-            axis_map = {"ax": ax, "ay": ay, "az": az}
-            sig = axis_map[axis_acc]
+            # aceleração
+            new_fs = 100
+            interpf = scipy.interpolate.interp1d(t_acc, ax)
+            time_ = np.arange(
+                start=t_acc[0], stop=t_acc[len(t_acc)-1], step=10)
+            x_ = interpf(time_)
+            time_interpolated, acc_x_interpolated = time_/1000, x_
+            interpf = scipy.interpolate.interp1d(t_acc, acc_y)
+            time_ = np.arange(
+                start=t_acc[0], stop=tempo[len(t_acc)-1], step=10)
+            y_ = interpf(time_)
+            time_interpolated, acc_y_interpolated = time_/1000, y_
+            interpf = scipy.interpolate.interp1d(t_acc, acc_z)
+            time_ = np.arange(
+                start=t_acc[0], stop=tempo[len(t_acc)-1], step=10)
+            z_ = interpf(time_)
+            time_interpolated, acc_z_interpolated = time_/1000, z_
 
-            pk_kwargs_acc = {}
-            if prominence_acc > 0: pk_kwargs_acc["prominence"] = float(prominence_acc)
-            if min_distance_samples_acc > 1: pk_kwargs_acc["distance"] = int(min_distance_samples_acc)
-            peaks_acc, _ = find_peaks(-sig, **pk_kwargs_acc)
+            acc_x_detrended = detrend(acc_x_interpolated)
+            acc_y_detrended = detrend(acc_y_interpolated)
+            acc_z_detrended = detrend(acc_z_interpolated)
 
-            onsets_acc, offsets_acc = [], []
-            for p in peaks_acc:
-                for j in range(p, 1, -1):
-                    if sig[j] > sig[j-1]: onsets_acc.append(j); break
-                for j in range(p, len(sig)-1):
-                    if sig[j] > sig[j+1]: offsets_acc.append(j); break
+            # Filtro passa-baixa (10 Hz)
+            cutoff = 2.5  # Frequência de corte
+            acc_x_filtered = low_pass_filter(
+                acc_x_detrended, cutoff, new_fs)
+            acc_y_filtered = low_pass_filter(
+                acc_y_detrended, cutoff, new_fs)
+            acc_z_filtered = low_pass_filter(
+                acc_z_detrended, cutoff, new_fs)
+            acc_norm_filtered = np.sqrt(
+                acc_x_filtered**2+acc_y_filtered**2+acc_z_filtered**2)
 
-            ncycles_acc = min(len(onsets_acc), len(offsets_acc))
-
-            onset_acc_t = [t_acc[i] for i in onsets_acc[:ncycles_acc]]
-            offset_acc_t = [t_acc[i] for i in offsets_acc[:ncycles_acc]]
-            peaks_acc_t  = [t_acc[i] for i in peaks_acc]
-
-            onset_acc_adj  = [clamp(v + st.session_state["adj_onset_acc"].get(i,0.0), t_min_acc, t_max_acc) for i,v in enumerate(onset_acc_t)]
-            offset_acc_adj = [clamp(v + st.session_state["adj_offset_acc"].get(i,0.0), t_min_acc, t_max_acc) for i,v in enumerate(offset_acc_t)]
-            peaks_acc_adj  = [clamp(v + st.session_state["adj_peak_acc"].get(i,0.0),  t_min_acc, t_max_acc) for i,v in enumerate(peaks_acc_t)]
-
-            # --- GRÁFICO DE TRIGGER (ACELERAÇÃO) ---
-            st.markdown("**Trigger — Aceleração (t = 0)**")
-            fig_trig_acc, ax_trig_acc = plt.subplots(figsize=(10, 2))
-            nwin_acc = min(2000, len(t_acc))
-            ax_trig_acc.plot(t_acc[:nwin_acc], sig[:nwin_acc], 'k-', label=axis_acc)
-            ax_trig_acc.axvline(0, color='r', label="t=0")
-            ax_trig_acc.set_xlabel("Tempo (s)")
-            ax_trig_acc.set_ylabel("Aceleração")
-            ax_trig_acc.legend(loc="lower left")
-            st.pyplot(fig_trig_acc)
-
+            
             with c_plot1:
-                figA, axA = plt.subplots(figsize=(10,4))
-                axA.plot(t_acc, sig, 'k-', label=f"{axis_acc}")
-                for i in range(ncycles_acc):
-                    on, of = onset_acc_adj[i], offset_acc_adj[i]
-                    axA.axvline(on, ls='--', color='orange', label='Início' if i==0 else "")
-                    axA.axvline(of, ls='--', color='green',  label='Fim' if i==0 else "")
-                    axA.axvspan(on, of, color='gray', alpha=0.3, label='Teste' if i==0 else "")
-                for k, tp in enumerate(peaks_acc_adj):
-                    axA.axvline(tp, ls='--', color='blue', label='Mínimos' if k==0 else "")
-                axA.set_xlabel("Tempo (s)"); axA.set_ylabel("Aceleração")
-                axA.legend(loc="lower left"); st.pyplot(figA)
+                # --- GRÁFICO DE TRIGGER (ACELERAÇÃO) ---
+                st.markdown("**Trigger — Aceleração (t = 0)**")
+                fig_trig_acc, ax_trig_acc = plt.subplots(figsize=(10, 2))
+                nwin_acc = min(2000, len(t_acc))
+                ax_trig_acc.plot(t_acc[:5000], acc_y_filtered[:5000], 'k-', label=axis_acc)
+                ax_trig_acc.axvline(0, color='r', label="t=0")
+                ax_trig_acc.set_xlabel("Tempo (s)")
+                ax_trig_acc.set_ylabel("Aceleração")
+                ax_trig_acc.legend(loc="lower left")
+                st.pyplot(fig_trig_acc)
 
-            with c_plot2:
-                rows_acc = []
-                for i in range(ncycles_acc):
-                    t_on, t_off = onset_acc_adj[i], offset_acc_adj[i]
-                    t_min_ciclo = first_min_within(peaks_acc_adj, t_on, t_off)
-                    rows_acc.append({"ciclo": i, "onset_s": t_on, "offset_s": t_off, "minimo_s": t_min_ciclo})
-                df_tempos_acc = pd.DataFrame(rows_acc)
-                st.subheader("Tempos por ciclo — Aceleração")
-                st.dataframe(df_tempos_acc, use_container_width=True)
-                st.download_button(
-                    "Baixar CSV (Aceleração)",
-                    df_tempos_acc.to_csv(index=False).encode("utf-8"),
-                    file_name="tempos_ciclos_aceleracao.csv",
-                    mime="text/csv"
-                )
-
-                # Visual auxiliares dos 3 eixos
-                figE, axE = plt.subplots(figsize=(10,2))
-                axE.plot(t_acc, axis_map["ax"], label="ax")
-                axE.plot(t_acc, axis_map["ay"], label="ay")
-                axE.plot(t_acc, axis_map["az"], label="az")
-                axE.set_xlabel("Tempo (s)"); axE.set_ylabel("Aceleração")
-                axE.legend(loc="lower left")
-                st.pyplot(figE)
-        else:
-            st.info("Carregue um arquivo de aceleração para visualizar.")
+                #c_plot11, c_plot12 = st.collumns(2)
+                
 
     with tab_map["Angular velocity"]:
         st.write("Conteúdo de Angular velocity (a definir).")
