@@ -175,7 +175,7 @@ with tab_map["Kinematics"]:
         with c_plot1:
             # --- GRÁFICO DE TRIGGER (KINEMÁTICA) ---
             st.markdown("**Trigger — Cinemática (t = 0)**")
-            fig_trig_kin, ax_trig_kin = plt.subplots(figsize=(10, 2))
+            fig_trig_kin, ax_trig_kin = plt.subplots(figsize=(10, 6))
             nwin = min(2000, len(t))
             ax_trig_kin.plot(t[:nwin], disp_z[:nwin], 'k-', label="disp_z")
             ax_trig_kin.axvline(0, color='r', label="t=0")
