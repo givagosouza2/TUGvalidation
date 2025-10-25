@@ -349,18 +349,18 @@ if st.session_state.show_dyn_tabs:
 
                 c_plot11, c_plot12 = st.columns(2)
                 with c_plot11:
-                    signal = ay**2
+                    vert = ay**2
                     fig_vert_acc, ax_vert_acc = plt.subplots(figsize=(10, 6))
-                    ax_vert_acc.plot(t_acc, signal, 'k-', label= 'acc V')
+                    ax_vert_acc.plot(t_acc, vert, 'k-', label= 'acc V')
                     ax_vert_acc.axvline(0, color='r', label="t=0")
                     ax_vert_acc.set_xlabel("Tempo (s)")
                     ax_vert_acc.set_ylabel("Aceleração")
                     ax_vert_acc.legend(loc="lower left")
                     st.pyplot(fig_vert_acc)
                 with c_plot12:    
-                    signal = az**2
+                    ap = az**2
                     fig_ap_acc, ax_ap_acc = plt.subplots(figsize=(10, 6))
-                    ax_ap_acc.plot(t_acc, signal, 'k-', label= 'acc AP')
+                    ax_ap_acc.plot(t_acc, ap, 'k-', label= 'acc AP')
                     ax_ap_acc.axvline(0, color='r', label="t=0")
                     ax_ap_acc.set_xlabel("Tempo (s)")
                     ax_ap_acc.set_ylabel("Aceleração")
