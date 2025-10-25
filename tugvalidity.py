@@ -63,7 +63,7 @@ for key in ("adj_onset_acc", "adj_offset_acc", "adj_peak_acc"):
 # =========================
 with tab_map["Kinematics"]:
     # Layout: col de controles + duas cols de plots/tabela
-    c_ctrl, c_plot1, c_plot2 = st.columns([1.2, 2, 2])
+    c_ctrl, c_plot1 = st.columns([1.2, 2])
 
     with c_ctrl:
         st.subheader("Controles — Cinemática")
@@ -183,40 +183,37 @@ with tab_map["Kinematics"]:
             ax_trig_kin.set_ylabel("Amplitude (m)")
             ax_trig_kin.legend(loc="lower left")
             st.pyplot(fig_trig_kin)
-
-
-        # PLOT 2 (coluna da direita): disp_z + marcações + tabela
-        with c_plot2:
-            fig2, ax2 = plt.subplots(figsize=(10, 4))
-            ax2.plot(t, disp_y, 'k-', label="Desloc. AP")
-            for i in range(num_ciclos):
-                on, of = onset_adj[i], offset_adj[i]
-                ax2.axvline(on, ls='--', color='orange', label='Início' if i==0 else "")
-                ax2.axvline(of, ls='--', color='green',  label='Fim' if i==0 else "")
-                ax2.axvspan(on, of, color='gray', alpha=0.3, label='Teste' if i==0 else "")
-                if i < len(stand_adj): ax2.axvline(stand_adj[i], ls='--', color='red',   label='Pico em pé' if i==0 else "")
-                if i < len(sit_adj):   ax2.axvline(sit_adj[i],   ls='--', color='black', label='Pico para sentar' if i==0 else "")
-            for k, tp in enumerate(peak_adj):
-                ax2.axvline(tp, ls='--', color='blue', label='Mínimos' if k==0 else "")
-            ax2.set_xlabel("Tempo (s)"); ax2.set_ylabel("Amplitude (m)")
-            ax2.legend(loc="lower left")
-            st.pyplot(fig2)
-
-            fig3, ax3 = plt.subplots(figsize=(10, 4))
-            ax3.plot(t, disp_z, 'k-', label="Desloc. vertical")
-            for i in range(num_ciclos):
-                on, of = onset_adj[i], offset_adj[i]
-                ax3.axvline(on, ls='--', color='orange', label='Início' if i==0 else "")
-                ax3.axvline(of, ls='--', color='green',  label='Fim' if i==0 else "")
-                ax3.axvspan(on, of, color='gray', alpha=0.3, label='Teste' if i==0 else "")
-                if i < len(stand_adj): ax3.axvline(stand_adj[i], ls='--', color='red',   label='Pico em pé' if i==0 else "")
-                if i < len(sit_adj):   ax3.axvline(sit_adj[i],   ls='--', color='black', label='Pico para sentar' if i==0 else "")
-            for k, tp in enumerate(peak_adj):
-                ax3.axvline(tp, ls='--', color='blue', label='Mínimos' if k==0 else "")
-            ax3.set_xlabel("Tempo (s)"); ax3.set_ylabel("Amplitude (m)")
-            ax3.legend(loc="lower left")
-            st.pyplot(fig3)
-
+            c_plot11, cplot_12 = st.columns(2)
+            with c_plot11:
+                fig2, ax2 = plt.subplots(figsize=(10, 4))
+                ax2.plot(t, disp_y, 'k-', label="Desloc. AP")
+                for i in range(num_ciclos):
+                    on, of = onset_adj[i], offset_adj[i]
+                    ax2.axvline(on, ls='--', color='orange', label='Início' if i==0 else "")
+                    ax2.axvline(of, ls='--', color='green',  label='Fim' if i==0 else "")
+                    ax2.axvspan(on, of, color='gray', alpha=0.3, label='Teste' if i==0 else "")
+                    if i < len(stand_adj): ax2.axvline(stand_adj[i], ls='--', color='red',   label='Pico em pé' if i==0 else "")
+                    if i < len(sit_adj):   ax2.axvline(sit_adj[i],   ls='--', color='black', label='Pico para sentar' if i==0 else "")
+                for k, tp in enumerate(peak_adj):
+                    ax2.axvline(tp, ls='--', color='blue', label='Mínimos' if k==0 else "")
+                ax2.set_xlabel("Tempo (s)"); ax2.set_ylabel("Amplitude (m)")
+                ax2.legend(loc="lower left")
+                st.pyplot(fig2)
+            with c_plot12:
+                fig3, ax3 = plt.subplots(figsize=(10, 4))
+                ax3.plot(t, disp_z, 'k-', label="Desloc. vertical")
+                for i in range(num_ciclos):
+                    on, of = onset_adj[i], offset_adj[i]
+                    ax3.axvline(on, ls='--', color='orange', label='Início' if i==0 else "")
+                    ax3.axvline(of, ls='--', color='green',  label='Fim' if i==0 else "")
+                    ax3.axvspan(on, of, color='gray', alpha=0.3, label='Teste' if i==0 else "")
+                    if i < len(stand_adj): ax3.axvline(stand_adj[i], ls='--', color='red',   label='Pico em pé' if i==0 else "")
+                    if i < len(sit_adj):   ax3.axvline(sit_adj[i],   ls='--', color='black', label='Pico para sentar' if i==0 else "")
+                for k, tp in enumerate(peak_adj):
+                    ax3.axvline(tp, ls='--', color='blue', label='Mínimos' if k==0 else "")
+                ax3.set_xlabel("Tempo (s)"); ax3.set_ylabel("Amplitude (m)")
+                ax3.legend(loc="lower left")
+                st.pyplot(fig3)
             # Tabela de tempos por ciclo + download
             rows = []
             for i in range(num_ciclos):
