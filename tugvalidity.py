@@ -94,7 +94,7 @@ with tab1:
                         time_original_kinem[values-400+idx])
                     break
 
-        fig, ax = plt.subplots(figsize=(10, 4))
+        fig, ax = plt.subplots(figsize=(10, 2))
         ax.plot(
         time_original_kinem[0:2000], disp_z[0:2000], 'k-')
         ax.plot([0, 0], [0, 2], 'r-')
