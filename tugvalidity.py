@@ -4,9 +4,9 @@ import numpy as np
 from scipy.signal import butter, filtfilt, detrend, find_peaks
 import matplotlib.pyplot as plt
 
-# ------------------------
+# =========================
 # Utilitários
-# ------------------------
+# =========================
 def low_pass_filter(data, cutoff, fs, order=4):
     nyquist = 0.5 * fs
     normal_cutoff = cutoff / nyquist
@@ -16,27 +16,39 @@ def low_pass_filter(data, cutoff, fs, order=4):
 def clamp(x, lo, hi):
     return max(lo, min(hi, x))
 
-# ------------------------
+def build_time_vector(n, fs, t0=0.0):
+    return t0 + np.arange(n) / float(fs)
+
+def first_min_within(peaks_times, t_on, t_off):
+    cand = [t for t in peaks_times if t_on <= t <= t_off]
+    return cand[0] if cand else np.nan
+
+# =========================
 # App
-# ------------------------
+# =========================
 st.set_page_config(layout="wide")
 st.title("Análise de Dados: Interpolação, Detrend e Filtro Passa-Baixa")
 
-# ------------------------
-# Sidebar (Cinemática)
-# ------------------------
+# =========================
+# Sidebar — CINEMÁTICA (topo da barra, botão por último)
+# =========================
 st.sidebar.header("Configurações — Cinemática")
 
-# Pré-processamento (cinemática)
-st.sidebar.subheader("Pré-processamento (cinemática)")
+# Arquivo de cinemática
+uploaded_file_kinem = st.sidebar.file_uploader(
+    "Arquivo de cinemática (.csv: X, Y, Z em mm)", type=["csv"]
+)
+
+# Pré-processamento (defaults pedidos)
+st.sidebar.subheader("Pré-processamento")
 do_detrend = st.sidebar.checkbox("Aplicar detrend", value=False)
 do_filter = st.sidebar.checkbox("Aplicar filtro passa-baixa", value=True)
 cutoff_kinem = st.sidebar.number_input(
     "Cutoff do filtro (Hz)", min_value=0.1, max_value=20.0, value=2.0, step=0.1
 )
 
-# Parâmetros de detecção (cinemática)
-st.sidebar.subheader("Detecção de eventos (cinemática)")
+# Detecção de eventos (defaults pedidos)
+st.sidebar.subheader("Detecção dos eventos")
 prominence = st.sidebar.number_input(
     "Prominence mínima", min_value=0.0, value=2.5, step=0.1
 )
@@ -44,20 +56,61 @@ min_distance_samples = st.sidebar.number_input(
     "Distância mínima entre picos (amostras)", min_value=1, value=200, step=1
 )
 
-# Upload do arquivo (cinemática)
-uploaded_file_kinem = st.sidebar.file_uploader(
-    "Arquivo de cinemática (.csv: X, Y, Z em mm)", type=["csv"]
+# Trigger (alinha t=0) — cinemática
+trigger_idx_shift = st.sidebar.slider(
+    "Trigger (alinha t=0) — Cinemática (por índice)",
+    min_value=0, max_value=10000, value=0, step=1,
+    help="Desloca o t=0 para o índice selecionado (requer arquivo carregado)"
 )
 
-# Botão para liberar abas extras
+# Estado das abas dinâmicas
 if "show_dyn_tabs" not in st.session_state:
     st.session_state.show_dyn_tabs = False
 
+# Botão FINAL da sidebar (fica por último enquanto abas extras não liberadas)
 st.sidebar.markdown("---")
-if st.sidebar.button("Mostrar abas de Acceleration e Angular velocity"):
-    st.session_state.show_dyn_tabs = True
+if not st.session_state.show_dyn_tabs:
+    if st.sidebar.button("Liberar abas ➜ Aceleração e Velocidade Angular"):
+        st.session_state.show_dyn_tabs = True
 
-# Monta as abas dinamicamente
+# Após liberar, podemos mostrar as seções de Aceleração abaixo (sem violar sua ordem original)
+if st.session_state.show_dyn_tabs:
+    st.sidebar.markdown("---")
+    st.sidebar.header("Configurações — Aceleração")
+
+    # Arquivo de aceleração
+    uploaded_file_acc = st.sidebar.file_uploader(
+        "Arquivo de aceleração (.csv: [tempo?], ax, ay, az)", type=["csv"], key="acc_file_uploader"
+    )
+
+    # Pré-processamento aceleração (herdo defaults de cinemática para consistência)
+    st.sidebar.subheader("Pré-processamento (Aceleração)")
+    do_detrend_acc = st.sidebar.checkbox("Aplicar detrend (acc)", value=False)
+    do_filter_acc = st.sidebar.checkbox("Aplicar filtro passa-baixa (acc)", value=True)
+    cutoff_acc = st.sidebar.number_input(
+        "Cutoff do filtro (Hz) — acc", min_value=0.1, max_value=50.0, value=6.0, step=0.1
+    )
+
+    # Tempo — caso o arquivo não tenha coluna de tempo
+    st.sidebar.subheader("Tempo / Amostragem (Aceleração)")
+    fs_acc = st.sidebar.number_input(
+        "Frequência de amostragem (Hz) — acc", min_value=1.0, max_value=1000.0, value=100.0, step=1.0
+    )
+    trigger_acc = st.sidebar.slider(
+        "Trigger (alinha t=0) — Aceleração (s)", min_value=-5.0, max_value=5.0, value=0.0, step=0.01
+    )
+
+    # Eixo para análise de eventos
+    st.sidebar.subheader("Detecção de eventos (Aceleração)")
+    axis_acc = st.sidebar.selectbox("Eixo para análise", options=["ax", "ay", "az"], index=2)
+    prominence_acc = st.sidebar.number_input("Prominence mínima — acc", min_value=0.0, value=2.5, step=0.1)
+    min_distance_samples_acc = st.sidebar.number_input(
+        "Distância mínima entre picos (amostras) — acc", min_value=1, value=200, step=1
+    )
+
+# =========================
+# Abas (dinâmicas)
+# =========================
 tab_labels = ["Kinematics"]
 if st.session_state.show_dyn_tabs:
     tab_labels += ["Acceleration", "Angular velocity"]
@@ -65,20 +118,23 @@ if st.session_state.show_dyn_tabs:
 tabs = st.tabs(tab_labels)
 tab_map = {label: tabs[i] for i, label in enumerate(tab_labels)}
 
-# ------------------------
-# Inicializa estados para ajustes finos
-# ------------------------
+# =========================
+# Estados para ajustes finos
+# =========================
 for key in ("adj_onset", "adj_offset", "adj_stand", "adj_sit", "adj_peaks"):
     if key not in st.session_state:
-        st.session_state[key] = {}  # dicionários {indice: delta_em_segundos}
+        st.session_state[key] = {}
 
-# ------------------------
-# Aba Kinematics
-# ------------------------
+for key in ("adj_onset_acc", "adj_offset_acc", "adj_peak_acc"):
+    if key not in st.session_state:
+        st.session_state[key] = {}
+
+# =========================
+# KINEMATICS
+# =========================
 with tab_map["Kinematics"]:
-    if uploaded_file_kinem:
-        # Leitura e pré-processamento
-        df = pd.read_csv(uploaded_file_kinem, sep=",", engine='python')
+    if uploaded_file_kinem is not None:
+        df = pd.read_csv(uploaded_file_kinem, sep=",", engine="python")
 
         if df.shape[1] < 3:
             st.error("O arquivo precisa ter ao menos 3 colunas numéricas (X, Y, Z).")
@@ -92,278 +148,128 @@ with tab_map["Kinematics"]:
             st.error("As três primeiras colunas devem ser numéricas.")
             st.stop()
 
-        # Amostragem
-        original_fs_kinem = 100.0  # Hz
-        time_original_kinem = np.arange(len(disp_y)) / original_fs_kinem
-        t_min, t_max = time_original_kinem[0], time_original_kinem[-1]
+        # fs e tempo
+        fs = 100.0
+        t = np.arange(len(disp_y)) / fs
 
-        # Aplicar pré-processamento
+        # trigger por índice (pedido anterior)
+        idx0 = int(clamp(trigger_idx_shift, 0, len(t)-1)) if len(t) > 0 else 0
+        t = t - t[idx0]
+
+        # pré-processamento
         if do_detrend:
-            disp_x = detrend(disp_x)
-            disp_y = detrend(disp_y)
-            disp_z = detrend(disp_z)
-
+            disp_x = detrend(disp_x); disp_y = detrend(disp_y); disp_z = detrend(disp_z)
         if do_filter:
-            disp_x = low_pass_filter(disp_x, cutoff_kinem, fs=original_fs_kinem)
-            disp_y = low_pass_filter(disp_y, cutoff_kinem, fs=original_fs_kinem)
-            disp_z = low_pass_filter(disp_z, cutoff_kinem, fs=original_fs_kinem)
+            disp_x = low_pass_filter(disp_x, cutoff_kinem, fs)
+            disp_y = low_pass_filter(disp_y, cutoff_kinem, fs)
+            disp_z = low_pass_filter(disp_z, cutoff_kinem, fs)
 
-        # Trigger na barra lateral
-        valor = st.sidebar.slider(
-            "Trigger (alinha t=0) — cinemática",
-            min_value=0,
-            max_value=len(time_original_kinem) - 1,
-            value=0
-        )
-        time_original_kinem = time_original_kinem - time_original_kinem[valor]
-        t_min, t_max = time_original_kinem[0], time_original_kinem[-1]
+        # detecção de mínimos em disp_y
+        pk_kwargs = {}
+        if prominence > 0: pk_kwargs["prominence"] = float(prominence)
+        if min_distance_samples > 1: pk_kwargs["distance"] = int(min_distance_samples)
+        peaks, _ = find_peaks(-disp_y, **pk_kwargs)
 
-        # Detecção de picos (mínimos de disp_y)
-        peak_kwargs = {}
-        if prominence > 0:
-            peak_kwargs["prominence"] = float(prominence)
-        if min_distance_samples > 1:
-            peak_kwargs["distance"] = int(min_distance_samples)
-
-        peaks, _ = find_peaks(-disp_y, **peak_kwargs)
-
-        # Busca de eventos (onsets/offsets)
+        # onsets/offsets
         onsets, offsets = [], []
-        for peak in peaks:
-            # Busca para trás: onset
-            for j in range(peak, 1, -1):
-                if disp_y[j] > disp_y[j - 1]:
-                    onsets.append(j)
-                    break
-            # Busca para frente: offset
-            for j in range(peak, len(disp_y) - 1):
-                if disp_y[j] > disp_y[j + 1]:
-                    offsets.append(j)
-                    break
+        for p in peaks:
+            for j in range(p, 1, -1):
+                if disp_y[j] > disp_y[j-1]:
+                    onsets.append(j); break
+            for j in range(p, len(disp_y)-1):
+                if disp_y[j] > disp_y[j+1]:
+                    offsets.append(j); break
 
         num_ciclos = min(len(onsets), len(offsets))
+        t_min, t_max = (t[0], t[-1]) if len(t) else (0.0, 0.0)
 
-        # standing e sitting (protegendo janelas)
-        standing_time, sitting_time = [], []
+        # standing / sitting com janelas protegidas
+        stand_times, sit_times = [], []
         for i in range(num_ciclos):
             v = onsets[i]
-            a, b = v, min(v + 200, len(disp_z))
-            if b > a:
-                standing_time.append(time_original_kinem[a + np.argmax(disp_z[a:b])])
-
+            a, b = v, min(v+200, len(disp_z))
+            if b > a: stand_times.append(t[a + int(np.argmax(disp_z[a:b]))])
             v = offsets[i]
-            a, b = max(0, v - 400), v
-            if b > a:
-                sitting_time.append(time_original_kinem[a + np.argmax(disp_z[a:b])])
+            a, b = max(0, v-400), v
+            if b > a: sit_times.append(t[a + int(np.argmax(disp_z[a:b]))])
 
-        # ---------------- AJUSTES FINOS (cinemática) ----------------
-        st.sidebar.markdown("---")
-        st.sidebar.subheader("Ajustes finos (cinemática)")
+        # ===== Ajustes finos (na sidebar, reaproveitando seção já existente) =====
+        st.sidebar.subheader("Ajustes finos — Cinemática")
+        sel_cycle = st.sidebar.number_input("Ciclo (0-index)", min_value=0, max_value=max(num_ciclos-1,0), value=0, step=1)
+        # recupera valores atuais
+        def _get(store, idx): return float(store.get(idx, 0.0))
+        d_on = st.sidebar.number_input("Δ Onset (s)", -2.0, 2.0, _get(st.session_state.adj_onset, sel_cycle), 0.01)
+        d_off = st.sidebar.number_input("Δ Offset (s)", -2.0, 2.0, _get(st.session_state.adj_offset, sel_cycle), 0.01)
+        d_st = st.sidebar.number_input("Δ Pico em pé (s)", -2.0, 2.0, _get(st.session_state.adj_stand, sel_cycle), 0.01)
+        d_si = st.sidebar.number_input("Δ Pico para sentar (s)", -2.0, 2.0, _get(st.session_state.adj_sit, sel_cycle), 0.01)
+        st.session_state.adj_onset[sel_cycle] = d_on
+        st.session_state.adj_offset[sel_cycle] = d_off
+        st.session_state.adj_stand[sel_cycle] = d_st
+        st.session_state.adj_sit[sel_cycle] = d_si
 
-        # Ajustes por ciclo (linhas: onset, offset, stand, sit)
-        if num_ciclos > 0:
-            sel_cycle = st.sidebar.number_input(
-                "Ciclo a ajustar (0-index)", min_value=0, max_value=num_ciclos - 1, value=0, step=1
-            )
-
-            def _get(store, idx):
-                return float(store.get(idx, 0.0))
-
-            d_on = st.sidebar.number_input("Δ Início (s)", -2.0, 2.0, _get(st.session_state.adj_onset, sel_cycle), 0.01)
-            d_off = st.sidebar.number_input("Δ Final (s)", -2.0, 2.0, _get(st.session_state.adj_offset, sel_cycle), 0.01)
-            d_st = st.sidebar.number_input("Δ Pico em pé (s)", -2.0, 2.0, _get(st.session_state.adj_stand, sel_cycle), 0.01)
-            d_si = st.sidebar.number_input("Δ Pico para sentar (s)", -2.0, 2.0, _get(st.session_state.adj_sit, sel_cycle), 0.01)
-
-            st.session_state.adj_onset[sel_cycle] = d_on
-            st.session_state.adj_offset[sel_cycle] = d_off
-            st.session_state.adj_stand[sel_cycle] = d_st
-            st.session_state.adj_sit[sel_cycle] = d_si
-
-            col_reset1, col_reset2 = st.sidebar.columns(2)
-            if col_reset1.button("Reset ciclo"):
-                st.session_state.adj_onset.pop(sel_cycle, None)
-                st.session_state.adj_offset.pop(sel_cycle, None)
-                st.session_state.adj_stand.pop(sel_cycle, None)
-                st.session_state.adj_sit.pop(sel_cycle, None)
-            if col_reset2.button("Reset tudo"):
-                st.session_state.adj_onset.clear()
-                st.session_state.adj_offset.clear()
-                st.session_state.adj_stand.clear()
-                st.session_state.adj_sit.clear()
-                st.session_state.adj_peaks.clear()
-
-        # Ajustes por pico (mínimos)
         if len(peaks) > 0:
-            sel_peak = st.sidebar.number_input(
-                "Pico (3 m) a ajustar (0-index)", min_value=0, max_value=len(peaks) - 1, value=0, step=1
-            )
-            curr_peak_delta = float(st.session_state.adj_peaks.get(sel_peak, 0.0))
-            d_pk = st.sidebar.number_input("Δ 3 m (s)", -2.0, 2.0, curr_peak_delta, 0.01)
+            sel_peak = st.sidebar.number_input("Pico (mínimo) 0-index", min_value=0, max_value=len(peaks)-1, value=0, step=1)
+            d_pk = st.sidebar.number_input("Δ Mínimo (s)", -2.0, 2.0, float(st.session_state.adj_peaks.get(sel_peak, 0.0)), 0.01)
             st.session_state.adj_peaks[sel_peak] = d_pk
 
-            if st.sidebar.button("Reset pico selecionado"):
-                st.session_state.adj_peaks.pop(sel_peak, None)
+        cr1, cr2 = st.sidebar.columns(2)
+        if cr1.button("Reset ciclo (cinemática)"):
+            for k in ("adj_onset","adj_offset","adj_stand","adj_sit"):
+                st.session_state[k].pop(sel_cycle, None)
+        if cr2.button("Reset tudo (cinemática)"):
+            for k in ("adj_onset","adj_offset","adj_stand","adj_sit","adj_peaks"):
+                st.session_state[k].clear()
 
-        # ---------------- Construção de tempos AJUSTADOS ----------------
-        # Arrays base de tempos
-        onset_times = [time_original_kinem[idx] for idx in onsets[:num_ciclos]]
-        offset_times = [time_original_kinem[idx] for idx in offsets[:num_ciclos]]
-        stand_times = list(standing_time)  # já são tempos
-        sit_times = list(sitting_time)
-        peak_times = [time_original_kinem[idx] for idx in peaks]
+        # tempos base e ajustados
+        onset_times = [t[i] for i in onsets[:num_ciclos]]
+        offset_times = [t[i] for i in offsets[:num_ciclos]]
+        peak_times = [t[i] for i in peaks]
+        onset_adj = [clamp(v + st.session_state.adj_onset.get(i,0.0), t_min, t_max) for i,v in enumerate(onset_times)]
+        offset_adj = [clamp(v + st.session_state.adj_offset.get(i,0.0), t_min, t_max) for i,v in enumerate(offset_times)]
+        stand_adj = [clamp(v + st.session_state.adj_stand.get(i,0.0), t_min, t_max) for i,v in enumerate(stand_times)]
+        sit_adj = [clamp(v + st.session_state.adj_sit.get(i,0.0), t_min, t_max) for i,v in enumerate(sit_times)]
+        peak_adj = [clamp(v + st.session_state.adj_peaks.get(i,0.0), t_min, t_max) for i,v in enumerate(peak_times)]
 
-        # Aplicar deltas por ciclo
-        onset_times_adj = [
-            clamp(t + st.session_state.adj_onset.get(i, 0.0), t_min, t_max)
-            for i, t in enumerate(onset_times)
-        ]
-        offset_times_adj = [
-            clamp(t + st.session_state.adj_offset.get(i, 0.0), t_min, t_max)
-            for i, t in enumerate(offset_times)
-        ]
-        stand_times_adj = [
-            clamp(t + st.session_state.adj_stand.get(i, 0.0), t_min, t_max)
-            for i, t in enumerate(stand_times)
-        ]
-        sit_times_adj = [
-            clamp(t + st.session_state.adj_sit.get(i, 0.0), t_min, t_max)
-            for i, t in enumerate(sit_times)
-        ]
-
-        # Aplicar deltas por pico
-        peak_times_adj = [
-            clamp(t + st.session_state.adj_peaks.get(i, 0.0), t_min, t_max)
-            for i, t in enumerate(peak_times)
-        ]
-
-        # ---------------- PLOTS ----------------
+        # PLOTS
         fig1, ax1 = plt.subplots(figsize=(10, 2))
-        ax1.plot(time_original_kinem[:2000], disp_z[:2000], 'k-', label="disp_z")
+        ax1.plot(t[:2000], disp_z[:2000], 'k-', label="disp_z")
         ax1.axvline(0, color='r', label="t=0")
-        ax1.set_xlabel("Tempo (s)")
-        ax1.set_ylabel("Amplitude (m)")
+        ax1.set_xlabel("Tempo (s)"); ax1.set_ylabel("Amplitude (m)")
         ax1.legend(loc="lower left")
         st.pyplot(fig1)
 
         col1, col2 = st.columns(2)
-
         with col1:
             fig2, ax2 = plt.subplots(figsize=(10, 4))
-            ax2.plot(time_original_kinem, disp_y, 'k-', label="Desloc. AP")
-
+            ax2.plot(t, disp_y, 'k-', label="Desloc. AP")
             for i in range(num_ciclos):
-                t_onset = onset_times_adj[i]
-                t_offset = offset_times_adj[i]
-                ax2.axvline(t_onset, linestyle='--', color='orange',
-                            label='Início' if i == 0 else "")
-                ax2.axvline(t_offset, linestyle='--', color='green',
-                            label='Fim' if i == 0 else "")
-                ax2.axvspan(t_onset, t_offset, color='gray', alpha=0.3,
-                            label='Teste' if i == 0 else "")
-
-                if i < len(stand_times_adj):
-                    ax2.axvline(stand_times_adj[i], linestyle='--', color='red',
-                                label='Pico em pé' if i == 0 else "")
-                if i < len(sit_times_adj):
-                    ax2.axvline(sit_times_adj[i], linestyle='--', color='black',
-                                label='Pico para sentar' if i == 0 else "")
-
-            for k, t in enumerate(peak_times_adj):
-                ax2.axvline(t, linestyle='--', color='blue',
-                            label='3 m' if k == 0 else "")
-
-            ax2.set_xlabel("Tempo (s)")
-            ax2.set_ylabel("Amplitude (m)")
-            ax2.legend(loc="lower left")
-            st.pyplot(fig2)
+                on, of = onset_adj[i], offset_adj[i]
+                ax2.axvline(on, ls='--', color='orange', label='Início' if i==0 else "")
+                ax2.axvline(of, ls='--', color='green', label='Fim' if i==0 else "")
+                ax2.axvspan(on, of, color='gray', alpha=0.3, label='Teste' if i==0 else "")
+                if i < len(stand_adj): ax2.axvline(stand_adj[i], ls='--', color='red', label='Pico em pé' if i==0 else "")
+                if i < len(sit_adj):   ax2.axvline(sit_adj[i],   ls='--', color='black', label='Pico para sentar' if i==0 else "")
+            for k, tp in enumerate(peak_adj):
+                ax2.axvline(tp, ls='--', color='blue', label='Mínimos' if k==0 else "")
+            ax2.set_xlabel("Tempo (s)"); ax2.set_ylabel("Amplitude (m)")
+            ax2.legend(loc="lower left"); st.pyplot(fig2)
 
         with col2:
             fig3, ax3 = plt.subplots(figsize=(10, 4))
-            ax3.plot(time_original_kinem, disp_z, 'k-', label="Desloc. vertical")
-
+            ax3.plot(t, disp_z, 'k-', label="Desloc. vertical")
             for i in range(num_ciclos):
-                t_onset = onset_times_adj[i]
-                t_offset = offset_times_adj[i]
-                ax3.axvline(t_onset, linestyle='--', color='orange',
-                            label='Início' if i == 0 else "")
-                ax3.axvline(t_offset, linestyle='--', color='green',
-                            label='Fim' if i == 0 else "")
-                ax3.axvspan(t_onset, t_offset, color='gray', alpha=0.3,
-                            label='Teste' if i == 0 else "")
+                on, of = onset_adj[i], offset_adj[i]
+                ax3.axvline(on, ls='--', color='orange', label='Início' if i==0 else "")
+                ax3.axvline(of, ls='--', color='green', label='Fim' if i==0 else "")
+                ax3.axvspan(on, of, color='gray', alpha=0.3, label='Teste' if i==0 else "")
+                if i < len(stand_adj): ax3.axvline(stand_adj[i], ls='--', color='red', label='Pico em pé' if i==0 else "")
+                if i < len(sit_adj):   ax3.axvline(sit_adj[i],   ls='--', color='black', label='Pico para sentar' if i==0 else "")
+            for k, tp in enumerate(peak_adj):
+                ax3.axvline(tp, ls='--', color='blue', label='Mínimos' if k==0 else "")
+            ax3.set_xlabel("Tempo (s)"); ax3.set_ylabel("Amplitude (m)")
+            ax3.legend(loc="lower left"); st.pyplot(fig3)
 
-                if i < len(stand_times_adj):
-                    ax3.axvline(stand_times_adj[i], linestyle='--', color='red',
-                                label='Pico em pé' if i == 0 else "")
-                if i < len(sit_times_adj):
-                    ax3.axvline(sit_times_adj[i], linestyle='--', color='black',
-                                label='Pico para sentar' if i == 0 else "")
-
-            for k, t in enumerate(peak_times_adj):
-                ax3.axvline(t, linestyle='--', color='blue',
-                            label='3 m' if k == 0 else "")
-
-            ax3.set_xlabel("Tempo (s)")
-            ax3.set_ylabel("Amplitude (m)")
-            ax3.legend(loc="lower left")
-            st.pyplot(fig3)
-
-        # Resumo quantitativo
-        st.info(
-            f"**Resumo**  \n"
-            f"• Picos detectados: {len(peaks)}  \n"
-            f"• Onsets: {len(onsets)}  \n"
-            f"• Offsets: {len(offsets)}  \n"
-            f"• Ciclos válidos: {num_ciclos}"
-        )
-        import math
-
+        # Tabela de tempos por ciclo (cinemática) + download
         rows = []
         for i in range(num_ciclos):
-            t_on  = onset_times_adj[i]
-            t_off = offset_times_adj[i]
-            t_st  = stand_times_adj[i] if i < len(stand_times_adj) else np.nan
-            t_si  = sit_times_adj[i]   if i < len(sit_times_adj)   else np.nan
-        
-            # mínimos dentro do intervalo do ciclo
-            mins_in_window = [t for t in peak_times_adj if t_on <= t <= t_off]
-            t_min = mins_in_window[0] if len(mins_in_window) > 0 else np.nan
-        
-            rows.append({
-                "ciclo": i,
-                "onset_s": t_on,
-                "offset_s": t_off,
-                "pico_em_pe_s": t_st,
-                "pico_para_sentar_s": t_si,
-                "minimo_s": t_min
-            })
-        
-        df_tempos = pd.DataFrame(rows, columns=[
-            "ciclo", "onset_s", "offset_s", "pico_em_pe_s", "pico_para_sentar_s", "minimo_s"
-        ])
-        
-        # Guarda no estado (útil para outras abas/exports futuros)
-        st.session_state["cinem_df_tempos"] = df_tempos.copy()
-        
-        st.subheader("Tempos por ciclo (cinemática)")
-        st.dataframe(df_tempos, use_container_width=True)
-        
-        # Download CSV
-        csv_bytes = df_tempos.to_csv(index=False).encode("utf-8")
-        st.download_button(
-            label="Baixar CSV de tempos (cinemática)",
-            data=csv_bytes,
-            file_name="tempos_ciclos_cinematica.csv",
-            mime="text/csv",
-        )
-    else:
-        st.warning("Faça upload de um arquivo para ver os resultados de cinemática.")
-        
-
-# ------------------------
-# Abas extras (aparecem após o clique)
-# ------------------------
-if st.session_state.show_dyn_tabs:
-    with tab_map["Acceleration"]:
-        st.write("Conteúdo de Acceleration (a definir).")
-    with tab_map["Angular velocity"]:
-        st.write("Conteúdo de Angular velocity (a definir).")
+            t_on, t_off = onset_adj[i], offset_ad
