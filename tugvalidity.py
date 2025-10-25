@@ -331,9 +331,9 @@ if st.session_state.show_dyn_tabs:
             if do_detrend_acc:
                 ax = detrend(acc_x_interpolated); ay = detrend(acc_y_interpolated); az = detrend(acc_z_interpolated)
             if do_filter_acc:
-                ax = low_pass_filter(ax, cutoff_acc, fs_acc)
-                ay = low_pass_filter(ay, cutoff_acc, fs_acc)
-                az = low_pass_filter(az, cutoff_acc, fs_acc)
+                ax = low_pass_filter(acc_x_interpolated, cutoff_acc, fs_acc)
+                ay = low_pass_filter(acc_y_interpolated, cutoff_acc, fs_acc)
+                az = low_pass_filter(acc_z_interpolated, cutoff_acc, fs_acc)
             
             with c_plot1:
                 # --- GRÁFICO DE TRIGGER (ACELERAÇÃO) ---
