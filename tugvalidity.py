@@ -183,7 +183,7 @@ with tab_map["Kinematics"]:
             ax_trig_kin.set_ylabel("Amplitude (m)")
             ax_trig_kin.legend(loc="lower left")
             st.pyplot(fig_trig_kin)
-            c_plot11, cplot_12 = st.columns(2)
+            c_plot11, cplot12 = st.columns(2)
             with c_plot11:
                 fig2, ax2 = plt.subplots(figsize=(10, 4))
                 ax2.plot(t, disp_y, 'k-', label="Desloc. AP")
