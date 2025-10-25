@@ -98,9 +98,6 @@ with tab1:
         ax.plot(
         time_original_kinem[0:2000], disp_z[0:2000], 'k-')
         ax.plot([0, 0], [0, 2], 'r-')
-        
-        #num_ciclos = min(len(onsets), len(offsets))
-        
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Amplitude")
         st.pyplot(fig)
@@ -130,15 +127,15 @@ with tab1:
                     ax.axvspan(t_offset, t_next_onset, color='lightblue',
                                alpha=0.3, label='Intervalo' if i == 0 else "")
 
-                # Mínimos detectados
-                for i, t in enumerate(time_original_kinem[peaks]):
-                    ax.axvline(t, linestyle='--', color='blue',
-                               label='Mínimo' if i == 0 else "")
-    
-                ax.set_xlabel("Tempo (s)")
-                ax.set_ylabel("Amplitude")
-                
-                st.pyplot(fig)
+                    # Mínimos detectados
+                    for i, t in enumerate(time_original_kinem[peaks]):
+                        ax.axvline(t, linestyle='--', color='blue',
+                                   label='Mínimo' if i == 0 else "")
+        
+                    ax.set_xlabel("Tempo (s)")
+                    ax.set_ylabel("Amplitude")
+                    
+                    st.pyplot(fig)
 
 
         
