@@ -150,11 +150,11 @@ with tab1:
                                 label='Pico em pé' if i == 0 else "")
                 if i < len(sitting_time):
                     ax2.axvline(sitting_time[i], linestyle='--', color='black',
-                                label='Pico sentado' if i == 0 else "")
+                                label='Pico para sentar' if i == 0 else "")
 
             for k, t in enumerate(time_original_kinem[peaks]):
                 ax2.axvline(t, linestyle='--', color='blue',
-                            label='Mínimos' if k == 0 else "")
+                            label='3 m' if k == 0 else "")
 
             ax2.set_xlabel("Tempo (s)")
             ax2.set_ylabel("Amplitude (m)")
