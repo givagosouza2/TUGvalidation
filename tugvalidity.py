@@ -63,7 +63,7 @@ for key in ("adj_onset_acc", "adj_offset_acc", "adj_peak_acc"):
 # =========================
 with tab_map["Kinematics"]:
     # Layout: col de controles + duas cols de plots/tabela
-    c_ctrl, c_plot1 = st.columns([1.2, 2])
+    c_ctrl, c_plot1 = st.columns([0.7, 2])
 
     with c_ctrl:
         st.subheader("Controles — Cinemática")
