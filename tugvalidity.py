@@ -250,124 +250,96 @@ if st.session_state.show_dyn_tabs:
                 "Arquivo (.txt: [tempo], ax, ay, az)", type=["txt"], key="acc_file"
             )
 
-            trigger_acc = st.number_input("Trigger (s)", -5.0, 5.0, 0.0, 0.01, key="acc_trig")
-
-            st.markdown("**Pré-processamento**")
-            do_detrend_acc = st.checkbox("Aplicar detrend", value=False, key="acc_detrend")
-            do_filter_acc  = st.checkbox("Aplicar filtro passa-baixa", value=True, key="acc_filt")
-            cutoff_acc = st.number_input("Cutoff (Hz)", 0.1, 50.0, 6.0, 0.1, key="acc_cutoff")
-
-            st.markdown("**Tempo / Amostragem**")
-            fs_acc = st.number_input("Frequência de amostragem (Hz)", 1.0, 2000.0, 100.0, 1.0, key="acc_fs")
+            if uploaded_file_acc is not None:
+                # 1) Leitura robusta (auto-separador)
+                df_acc = pd.read_csv(uploaded_file_acc, sep=None, engine="python")
             
-            st.markdown("**Detecção de eventos**")
-            axis_acc = st.selectbox("Eixo para eventos", ["ax", "ay", "az"], index=2, key="acc_axis")
-            prominence_acc = st.number_input("Prominence mínima", 0.0, 1000.0, 2.5, 0.1, key="acc_prom")
-            min_distance_samples_acc = st.number_input("Distância mínima (amostras)", 1, 10000, 200, 1, key="acc_dist")
-
-            st.markdown("**Ajustes finos**")
-            sel_cycle_acc = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="acc_sel_cycle")
-            d_on_acc  = st.number_input("Δ Onset (s)",  -2.0, 2.0, float(st.session_state["adj_onset_acc"].get(sel_cycle_acc, 0.0)), 0.01, key="acc_don")
-            d_off_acc = st.number_input("Δ Offset (s)", -2.0, 2.0, float(st.session_state["adj_offset_acc"].get(sel_cycle_acc, 0.0)), 0.01, key="acc_doff")
-            st.session_state["adj_onset_acc"][sel_cycle_acc] = d_on_acc
-            st.session_state["adj_offset_acc"][sel_cycle_acc] = d_off_acc
-
-            sel_peak_acc = st.number_input("Pico (mínimo) 0-index", 0, 9999, 0, 1, key="acc_sel_peak")
-            d_pk_acc = st.number_input("Δ Mínimo (s)", -2.0, 2.0, float(st.session_state["adj_peak_acc"].get(sel_peak_acc, 0.0)), 0.01, key="acc_dpk")
-            st.session_state["adj_peak_acc"][sel_peak_acc] = d_pk_acc
-
-            rc1, rc2 = st.columns(2)
-            if rc1.button("Reset ciclo (acc)"):
-                st.session_state["adj_onset_acc"].pop(sel_cycle_acc, None)
-                st.session_state["adj_offset_acc"].pop(sel_cycle_acc, None)
-            if rc2.button("Reset tudo (acc)"):
-                st.session_state["adj_onset_acc"].clear()
-                st.session_state["adj_offset_acc"].clear()
-                st.session_state["adj_peak_acc"].clear()
-
-        # Processamento e visualização
-        if uploaded_file_acc is not None:
-            df_acc = pd.read_csv(uploaded_file_acc, sep=";", engine="python")
-            if df_acc.shape[1] >= 4:
-                try:
-                    t_acc = df_acc.iloc[:,0].astype(float).values
-                    ax = df_acc.iloc[:,1].astype(float).values
-                    ay = df_acc.iloc[:,2].astype(float).values
-                    az = df_acc.iloc[:,3].astype(float).values
-                except Exception:
-                    st.error("As quatro primeiras colunas devem ser numéricas (tempo, ax, ay, az)."); st.stop()
-            elif df_acc.shape[1] >= 3:
-                try:
-                    ax = df_acc.iloc[:,0].astype(float).values
-                    ay = df_acc.iloc[:,1].astype(float).values
-                    az = df_acc.iloc[:,2].astype(float).values
-                except Exception:
-                    st.error("As três primeiras colunas devem ser numéricas (ax, ay, az)."); st.stop()
-                t_acc = build_time_vector(len(ax), fs_acc)
-            else:
-                st.error("Arquivo deve ter 3 ou 4 colunas ([tempo], ax, ay, az)."); st.stop()
-
-            t_acc = t_acc - trigger_acc
-            t_min_acc, t_max_acc = t_acc[0], t_acc[-1]
-
-            # aceleração
-            new_fs = 100
-            interpf = scipy.interpolate.interp1d(t_acc, ax)
-            time_ = np.arange(
-                start=t_acc[0], stop=t_acc[len(t_acc)-1], step=10)
-            x_ = interpf(time_)
-            time_interpolated, acc_x_interpolated = time_/1000, x_
-            interpf = scipy.interpolate.interp1d(t_acc, ay)
-            time_ = np.arange(
-                start=t_acc[0], stop=t_acc[len(t_acc)-1], step=10)
-            y_ = interpf(time_)
-            time_interpolated, acc_y_interpolated = time_/1000, y_
-            interpf = scipy.interpolate.interp1d(t_acc, az)
-            time_ = np.arange(
-                start=t_acc[0], stop=t_acc[len(t_acc)-1], step=10)
-            z_ = interpf(time_)
-            time_interpolated, acc_z_interpolated = time_/1000, z_
-
-            if do_detrend_acc:
-                ax = detrend(acc_x_interpolated); ay = detrend(acc_y_interpolated); az = detrend(acc_z_interpolated)
-            if do_filter_acc:
-                ax = low_pass_filter(acc_x_interpolated, cutoff_acc, fs_acc)
-                ay = low_pass_filter(acc_y_interpolated, cutoff_acc, fs_acc)
-                az = low_pass_filter(acc_z_interpolated, cutoff_acc, fs_acc)
+                # 2) Identifica formato: [tempo, ax, ay, az] OU [ax, ay, az]
+                if df_acc.shape[1] >= 4:
+                    try:
+                        t_acc = df_acc.iloc[:, 0].astype(float).values
+                        ax = df_acc.iloc[:, 1].astype(float).values
+                        ay = df_acc.iloc[:, 2].astype(float).values
+                        az = df_acc.iloc[:, 3].astype(float).values
+                    except Exception:
+                        st.error("As quatro primeiras colunas devem ser numéricas (tempo, ax, ay, az).")
+                        st.stop()
+                elif df_acc.shape[1] >= 3:
+                    try:
+                        ax = df_acc.iloc[:, 0].astype(float).values
+                        ay = df_acc.iloc[:, 1].astype(float).values
+                        az = df_acc.iloc[:, 2].astype(float).values
+                    except Exception:
+                        st.error("As três primeiras colunas devem ser numéricas (ax, ay, az).")
+                        st.stop()
+                    # Sem coluna de tempo: constrói pelo fs informado
+                    t_acc = build_time_vector(len(ax), fs_acc)
+                else:
+                    st.error("Arquivo deve ter 3 ou 4 colunas ([tempo], ax, ay, az).")
+                    st.stop()
             
-            with c_plot1:
-                # --- GRÁFICO DE TRIGGER (ACELERAÇÃO) ---
-                trigger = ay**2
-                st.markdown("**Trigger — Aceleração (t = 0)**")
-                fig_trig_acc, ax_trig_acc = plt.subplots(figsize=(10, 2))
-                ax_trig_acc.plot(t_acc[:1000], trigger[:1000], 'k-', label= 'acc V')
-                ax_trig_acc.axvline(0, color='r', label="t=0")
-                ax_trig_acc.set_xlabel("Tempo (s)")
-                ax_trig_acc.set_ylabel("Aceleração")
-                ax_trig_acc.legend(loc="lower left")
-                st.pyplot(fig_trig_acc)
-
-                c_plot11, c_plot12 = st.columns(2)
-                with c_plot11:
-                    vert = ay**2
-                    fig_vert_acc, ax_vert_acc = plt.subplots(figsize=(10, 6))
-                    ax_vert_acc.plot(t_acc, vert, 'k-', label= 'acc V')
-                    ax_vert_acc.axvline(0, color='r', label="t=0")
-                    ax_vert_acc.set_xlabel("Tempo (s)")
-                    ax_vert_acc.set_ylabel("Aceleração")
-                    ax_vert_acc.legend(loc="lower left")
-                    st.pyplot(fig_vert_acc)
-                with c_plot12:    
-                    ap = az**2
-                    fig_ap_acc, ax_ap_acc = plt.subplots(figsize=(10, 6))
-                    ax_ap_acc.plot(t_acc, ap, 'k-', label= 'acc AP')
-                    ax_ap_acc.axvline(0, color='r', label="t=0")
-                    ax_ap_acc.set_xlabel("Tempo (s)")
-                    ax_ap_acc.set_ylabel("Aceleração")
-                    ax_ap_acc.legend(loc="lower left")
-                    st.pyplot(fig_ap_acc)
-                
-                
+                # 3) Alinha trigger (em segundos)
+                t_acc = t_acc - float(trigger_acc)
+            
+                # 4) Reamostra para uma taxa uniforme (new_fs)
+                new_fs = 100.0  # Hz (ajuste se quiser controlar pela UI)
+                t_start, t_end = float(t_acc[0]), float(t_acc[-1])
+                if t_end <= t_start:
+                    st.error("A coluna de tempo precisa ser estritamente crescente.")
+                    st.stop()
+            
+                t_new = np.arange(t_start, t_end, 1.0/new_fs)
+            
+                # interp1d exige tempo crescente e sem NaN
+                f_ax = interp1d(t_acc, ax, kind="linear", bounds_error=False, fill_value="extrapolate")
+                f_ay = interp1d(t_acc, ay, kind="linear", bounds_error=False, fill_value="extrapolate")
+                f_az = interp1d(t_acc, az, kind="linear", bounds_error=False, fill_value="extrapolate")
+            
+                ax_i = f_ax(t_new)
+                ay_i = f_ay(t_new)
+                az_i = f_az(t_new)
+            
+                # 5) Pré-processamento (detrend/filtro) — agora usando new_fs!
+                if do_detrend_acc:
+                    ax_i = detrend(ax_i); ay_i = detrend(ay_i); az_i = detrend(az_i)
+                if do_filter_acc:
+                    ax_i = low_pass_filter(ax_i, cutoff_acc, new_fs)
+                    ay_i = low_pass_filter(ay_i, cutoff_acc, new_fs)
+                    az_i = low_pass_filter(az_i, cutoff_acc, new_fs)
+            
+                # 6) Gráfico de trigger (use a série do eixo escolhido)
+                axis_map = {"ax": ax_i, "ay": ay_i, "az": az_i}
+                sig = axis_map[axis_acc]
+            
+                with c_plot1:
+                    st.markdown("**Trigger — Aceleração (t = 0)**")
+                    fig_trig_acc, ax_trig_acc = plt.subplots(figsize=(10, 2))
+                    nwin_acc = min(2000, len(t_new))
+                    ax_trig_acc.plot(t_new[:nwin_acc], sig[:nwin_acc], 'k-', label=axis_acc)
+                    ax_trig_acc.axvline(0, color='r', label="t=0")
+                    ax_trig_acc.set_xlabel("Tempo (s)")
+                    ax_trig_acc.set_ylabel("Aceleração")
+                    ax_trig_acc.legend(loc="lower left")
+                    st.pyplot(fig_trig_acc)
+            
+                    # Visuais auxiliares: vert (ay) e AP (az) ao quadrado (se quiser manter essa métrica)
+                    c_plot11, c_plot12 = st.columns(2)
+                    with c_plot11:
+                        fig_vert_acc, ax_vert_acc = plt.subplots(figsize=(10, 6))
+                        ax_vert_acc.plot(t_new, ay_i**2, 'k-', label='acc V (ay²)')
+                        ax_vert_acc.axvline(0, color='r', label="t=0")
+                        ax_vert_acc.set_xlabel("Tempo (s)")
+                        ax_vert_acc.set_ylabel("Aceleração²")
+                        ax_vert_acc.legend(loc="lower left")
+                        st.pyplot(fig_vert_acc)
+                    with c_plot12:
+                        fig_ap_acc, ax_ap_acc = plt.subplots(figsize=(10, 6))
+                        ax_ap_acc.plot(t_new, az_i**2, 'k-', label='acc AP (az²)')
+                        ax_ap_acc.axvline(0, color='r', label="t=0")
+                        ax_ap_acc.set_xlabel("Tempo (s)")
+                        ax_ap_acc.set_ylabel("Aceleração²")
+                        ax_ap_acc.legend(loc="lower left")
+                        st.pyplot(fig_ap_acc)    
 
     with tab_map["Angular velocity"]:
         st.write("Conteúdo de Angular velocity (a definir).")
