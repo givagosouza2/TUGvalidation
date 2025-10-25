@@ -317,17 +317,16 @@ if st.session_state.show_dyn_tabs:
                 start=t_acc[0], stop=t_acc[len(t_acc)-1], step=10)
             x_ = interpf(time_)
             time_interpolated, acc_x_interpolated = time_/1000, x_
-            interpf = scipy.interpolate.interp1d(t_acc, acc_y)
+            interpf = scipy.interpolate.interp1d(t_acc, ay)
             time_ = np.arange(
                 start=t_acc[0], stop=tempo[len(t_acc)-1], step=10)
             y_ = interpf(time_)
             time_interpolated, acc_y_interpolated = time_/1000, y_
-            interpf = scipy.interpolate.interp1d(t_acc, acc_z)
+            interpf = scipy.interpolate.interp1d(t_acc, az)
             time_ = np.arange(
                 start=t_acc[0], stop=tempo[len(t_acc)-1], step=10)
             z_ = interpf(time_)
             time_interpolated, acc_z_interpolated = time_/1000, z_
-
 
             if do_detrend_acc:
                 ax = detrend(acc_x_interpolated); ay = detrend(acc_y_interpolated); az = detrend(acc_z_interpolated)
@@ -335,9 +334,6 @@ if st.session_state.show_dyn_tabs:
                 ax = low_pass_filter(ax, cutoff_acc, fs_acc)
                 ay = low_pass_filter(ay, cutoff_acc, fs_acc)
                 az = low_pass_filter(az, cutoff_acc, fs_acc)
-
-            
-            
             
             with c_plot1:
                 # --- GRÁFICO DE TRIGGER (ACELERAÇÃO) ---
