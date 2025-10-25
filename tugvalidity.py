@@ -99,7 +99,7 @@ with tab1:
         time_original_kinem[0:2000], disp_z[0:2000], 'k-')
         ax.plot([0, 0], [0, 2], 'r-')
         
-        num_ciclos = min(len(onsets), len(offsets))
+        #num_ciclos = min(len(onsets), len(offsets))
         
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Amplitude")
@@ -107,12 +107,39 @@ with tab1:
         col1,col2 = st.columns(2)
         with col1:
             fig, ax = plt.subplots(figsize=(10, 4))
-            ax.plot(
-                time_original_kinem[0:2000], disp_z[0:2000], 'k-')
-            ax.plot([0, 0], [0, 2], 'r-')
-            ax.set_xlabel("Tempo (s)")
-            ax.set_ylabel("Amplitude")
-            st.pyplot(fig)
+            ax.plot(time_original_kinem, disp_y, 'k-')
+            # Verificação básica para evitar erros
+            num_ciclos = min(len(onsets), len(offsets))
+            
+            for i in range(num_ciclos):
+                t_onset = time_original_kinem[onsets[i]]
+                t_offset = time_original_kinem[offsets[i]]
+                # Linha tracejada: início
+                ax.axvline(t_onset, linestyle='--', color='orange',
+                           label='Início da queda' if i == 0 else "")
+                # Linha tracejada: fim
+                ax.axvline(t_offset, linestyle='--', color='green',
+                           label='Fim da queda' if i == 0 else "")
+                # Faixa entre onset e offset
+                ax.axvspan(t_onset, t_offset, color='gray', alpha=0.3,
+                           label='Fase de queda' if i == 0 else "")
+
+                # Se houver um próximo ciclo, pinta o intervalo entre o offset atual e o próximo onset
+                if i + 1 < num_ciclos:
+                    t_next_onset = time_original_kinem[onsets[i+1]]
+                    ax.axvspan(t_offset, t_next_onset, color='lightblue',
+                               alpha=0.3, label='Intervalo' if i == 0 else "")
+
+                # Mínimos detectados
+                for i, t in enumerate(time_original_kinem[peaks]):
+                    ax.axvline(t, linestyle='--', color='blue',
+                               label='Mínimo' if i == 0 else "")
+    
+                ax.set_xlabel("Tempo (s)")
+                ax.set_ylabel("Amplitude")
+                
+                st.pyplot(fig)
+
 
         
                 
