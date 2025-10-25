@@ -115,7 +115,7 @@ with tab1:
         col1, col2 = st.columns(2)
         with col1:
             fig2, ax2 = plt.subplots(figsize=(10, 4))
-            ax2.plot(time_original_kinem, disp_y, 'k-', label="disp_y")
+            ax2.plot(time_original_kinem, disp_y, 'k-', label="Deslocamento AP")
 
             for i in range(num_ciclos):
                 t_onset = time_original_kinem[onsets[i]]
@@ -131,26 +131,19 @@ with tab1:
                 if i + 1 < num_ciclos:
                     t_next_onset = time_original_kinem[onsets[i + 1]]
                     ax2.axvspan(t_offset, t_next_onset, color='lightblue', alpha=0.3,
-                                label='Intervalo' if i == 0 else "")
+                                label='Intervalo entre testes' if i == 0 else "")
 
             # Mínimos detectados (fora do loop e sem sobrescrever i)
             for k, t in enumerate(time_original_kinem[peaks]):
                 ax2.axvline(t, linestyle='--', color='blue',
-                            label='Mínimos' if k == 0 else "")
+                            label='3 m' if k == 0 else "")
 
             ax2.set_xlabel("Tempo (s)")
             ax2.set_ylabel("Amplitude (m)")
             ax2.legend()
             st.pyplot(fig2)
 
-        # --------- (Opcional) Exibir contagens ----------
-        with col2:
-            st.subheader("Resumo")
-            st.write(f"Peaks (mínimos): {len(peaks)}")
-            st.write(f"Onsets detectados: {len(onsets)}")
-            st.write(f"Offsets detectados: {len(offsets)}")
-            st.write(f"Ciclos válidos (pares onset/offset): {num_ciclos}")
-
+        
 
 
 
