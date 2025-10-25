@@ -184,6 +184,9 @@ with tab_map["Kinematics"]:
             ax_trig_kin.legend(loc="lower left")
             st.pyplot(fig_trig_kin)
 
+
+        # PLOT 2 (coluna da direita): disp_z + marcações + tabela
+        with c_plot2:
             fig2, ax2 = plt.subplots(figsize=(10, 4))
             ax2.plot(t, disp_y, 'k-', label="Desloc. AP")
             for i in range(num_ciclos):
@@ -199,8 +202,6 @@ with tab_map["Kinematics"]:
             ax2.legend(loc="lower left")
             st.pyplot(fig2)
 
-        # PLOT 2 (coluna da direita): disp_z + marcações + tabela
-        with c_plot2:
             fig3, ax3 = plt.subplots(figsize=(10, 4))
             ax3.plot(t, disp_z, 'k-', label="Desloc. vertical")
             for i in range(num_ciclos):
