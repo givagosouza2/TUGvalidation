@@ -270,7 +270,7 @@ with tab_map["Kinematics"]:
 
             for k, t in enumerate(peak_times_adj):
                 ax2.axvline(t, linestyle='--', color='blue',
-                            label='Mínimos' if k == 0 else "")
+                            label='3 m' if k == 0 else "")
 
             ax2.set_xlabel("Tempo (s)")
             ax2.set_ylabel("Amplitude (m)")
@@ -300,7 +300,7 @@ with tab_map["Kinematics"]:
 
             for k, t in enumerate(peak_times_adj):
                 ax3.axvline(t, linestyle='--', color='blue',
-                            label='Mínimos' if k == 0 else "")
+                            label='3 m' if k == 0 else "")
 
             ax3.set_xlabel("Tempo (s)")
             ax3.set_ylabel("Amplitude (m)")
