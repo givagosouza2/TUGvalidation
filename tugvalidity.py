@@ -360,7 +360,7 @@ if st.session_state.show_dyn_tabs:
                 with c_plot12:    
                     signal = az**2
                     fig_ap_acc, ax_ap_acc = plt.subplots(figsize=(10, 2))
-                    ax_ap_acc.plot(t_acc[:1000], signal[:1000], 'k-', label= 'acc V')
+                    ax_ap_acc.plot(t_acc[:1000], signal[:1000], 'k-', label= 'acc AP')
                     ax_ap_acc.axvline(0, color='r', label="t=0")
                     ax_ap_acc.set_xlabel("Tempo (s)")
                     ax_ap_acc.set_ylabel("Aceleração")
