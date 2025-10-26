@@ -93,10 +93,10 @@ if uploaded_file_acc:
       ml_acc = np.sqrt(acc_x_filtered**2)
       ap_acc = np.sqrt(acc_z_filtered**2)
 
-    indices, propriedades = find_peaks(v_acc, height = 2, distance = 500)
-    picos_ordenados_v_acc = np.argsort(v_acc[indices])
-    indices, propriedades = find_peaks(ap_acc, height = 2, distance = 500)
-    picos_ordenados_ap_acc = np.argsort(ap_acc[indices])
+    indices_v, propriedades = find_peaks(v_acc, height = 2, distance = 500)
+    picos_ordenados_v_acc = np.argsort(v_acc[indices_v])
+    indices_ap, propriedades = find_peaks(ap_acc, height = 2, distance = 500)
+    picos_ordenados_ap_acc = np.argsort(ap_acc[indices_ap])
     fig, ax = plt.subplots(figsize=(10, 2))
     ax.plot(time_interpolated[0:2000], v_acc[0:2000], 'k-')   
     ax.plot([0, 0], [0, 30], 'r--')
@@ -107,7 +107,7 @@ if uploaded_file_acc:
     with col1:
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.plot(time_interpolated, v_acc, 'k-')
-        ax.plot(time_interpolated[picos_ordenados_v_acc], v_acc[picos_ordenados_v_acc], 'ro')
+        ax.plot(time_interpolated[indices_v[picos_ordenados_v_acc]], v_acc[indices_v[picos_ordenados_v_acc]], 'ro')
         ax.plot([0, 0], [0, 30], 'r--')
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Amplitude")
