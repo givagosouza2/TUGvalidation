@@ -83,27 +83,22 @@ with tab_map["Kinematics"]:
         st.markdown("**Trigger (alinha t=0)**")
         trigger_idx_shift = st.number_input("Índice de referência", 0, 100000, 0, 1, key="kin_trig")
 
-        st.markdown("**Pré-processamento**")
-        do_detrend = st.checkbox("Aplicar detrend", value=False, key="kin_detrend")
-        do_filter  = st.checkbox("Aplicar filtro passa-baixa", value=True, key="kin_filt")
-        cutoff_kinem = st.number_input("Cutoff (Hz)", 0.1, 20.0, 2.0, 0.1, key="kin_cutoff")
-
-        st.markdown("**Detecção de eventos**")
-        prominence = st.number_input("Prominence mínima", 0.0, 1000.0, 2.5, 0.1, key="kin_prom")
-        min_distance_samples = st.number_input("Distância mínima (amostras)", 1, 10000, 200, 1, key="kin_dist")
+        cutoff_kinem = 2
+        prominence = 2.5
+        min_distance_samples = 200
 
         st.markdown("**Ajustes finos**")
-        sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="kin_sel_cycle")
-        d_on = st.number_input("Δ Onset (s)", -2.0, 2.0, float(st.session_state["adj_onset"].get(sel_cycle, 0.0)), 0.01, key="kin_don")
-        d_off = st.number_input("Δ Offset (s)", -2.0, 2.0, float(st.session_state["adj_offset"].get(sel_cycle, 0.0)), 0.01, key="kin_doff")
-        d_st = st.number_input("Δ Pico em pé (s)", -2.0, 2.0, float(st.session_state["adj_stand"].get(sel_cycle, 0.0)), 0.01, key="kin_dst")
-        d_si = st.number_input("Δ Pico para sentar (s)", -2.0, 2.0, float(st.session_state["adj_sit"].get(sel_cycle, 0.0)), 0.01, key="kin_dsi")
+        sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1)
+        d_on = st.number_input("Δ Onset (s)", -2.0, 2.0, float(st.session_state["adj_onset"].get(sel_cycle, 0.0)), 0.01)
+        d_off = st.number_input("Δ Offset (s)", -2.0, 2.0, float(st.session_state["adj_offset"].get(sel_cycle, 0.0)), 0.01)
+        d_st = st.number_input("Δ Pico em pé (s)", -2.0, 2.0, float(st.session_state["adj_stand"].get(sel_cycle, 0.0)), 0.01)
+        d_si = st.number_input("Δ Pico para sentar (s)", -2.0, 2.0, float(st.session_state["adj_sit"].get(sel_cycle, 0.0)), 0.01)
         st.session_state["adj_onset"][sel_cycle] = d_on
         st.session_state["adj_offset"][sel_cycle] = d_off
         st.session_state["adj_stand"][sel_cycle] = d_st
         st.session_state["adj_sit"][sel_cycle]   = d_si
 
-        sel_peak = st.number_input("Pico (mínimo) 0-index", 0, 9999, 0, 1, key="kin_sel_peak")
+        sel_peak = st.number_input("Pico (mínimo) 0-index", 0, 9999, 0, 1)
         d_pk = st.number_input("Δ Mínimo (s)", -2.0, 2.0, float(st.session_state["adj_peaks"].get(sel_peak, 0.0)), 0.01, key="kin_dpk")
         st.session_state["adj_peaks"][sel_peak] = d_pk
 
