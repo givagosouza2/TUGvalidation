@@ -29,7 +29,7 @@ def first_min_within(peaks_times, t_on, t_off):
 # =========================
 st.set_page_config(layout="wide")
 st.title("Análise de dados da medidas cinemáticas do TUG")
-
+st.expander("Esta rotina foi criada para que se importe dados de medidas cinemáticas, aplique o trigger do registro e verifique se as marcações automatizadas correspondentes aos eventos biomecânicos realizados durante o TUG. Caso seja necessário, o usuário deverá fazer ajustes nestas marcações.")
 # defaults de estado que usamos em UI/plot (evita NameError)
 defaults = {
     "acc_trig": 0.0,  # trigger da aba Acceleration (reservado p/ futuras abas)
