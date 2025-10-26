@@ -44,8 +44,8 @@ defaults = {
 for k, v in defaults.items():
     st.session_state.setdefault(k, v)
 
-# Estados para ajustes finos (cinemática)
-for key in ("adj_onset", "adj_offset", "adj_stand", "adj_sit", "adj_peaks"):
+# Estados para ajustes finos (acelerômetro)
+for key in ("adj_onset", "adj_offset"):
     if key not in st.session_state:
         st.session_state[key] = {}
 
@@ -137,7 +137,7 @@ with tab1:
         valor_acc = st.slider(
             "Ajuste o trigger do acc", min_value=0, max_value=len(time_interpolated), value=0)
         time_interpolated = time_interpolated - \
-            time_interpolated[valor_acc]
+            time_interpolated[trigger_idx_shift]
     
         if np.mean(acc_x) > np.mean(acc_y):
           ml_acc = np.sqrt(acc_y_filtered**2)
