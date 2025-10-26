@@ -152,54 +152,55 @@ with tab1:
         
         indices_ap, propriedades = find_peaks(ap_acc, height = 2, distance = 500)
         
-        fig, ax = plt.subplots(figsize=(10, 2))
-        ax.plot(time_interpolated[0:2000], v_acc[0:2000], 'k-')   
-        ax.plot([0, 0], [0, 30], 'r--')
-        ax.set_xlabel("Tempo (s)")
-        ax.set_ylabel("Amplitude")
-        st.pyplot(fig)
-        col1,col2 = st.columns(2)
-        with col1:
-            fig, ax = plt.subplots(figsize=(10, 6))
-            ax.plot(time_interpolated, v_acc, 'k-')
-            for i in range(1,9,1):
-                ax.plot(time_interpolated[indices_v[i]], v_acc[indices_v[i]], 'ro')
+        with c_plot1:
+            fig, ax = plt.subplots(figsize=(10, 2))
+            ax.plot(time_interpolated[0:2000], v_acc[0:2000], 'k-')   
             ax.plot([0, 0], [0, 30], 'r--')
             ax.set_xlabel("Tempo (s)")
-            ax.set_ylabel("Aceleração vertical")
+            ax.set_ylabel("Amplitude")
             st.pyplot(fig)
-        with col2:    
-            fig, ax = plt.subplots(figsize=(10, 6))
-            ax.plot(time_interpolated, ap_acc, 'k-')
-            for i in range(1,9,1):
-                ax.plot(time_interpolated[indices_ap[i]], ap_acc[indices_ap[i]], 'ro')
-            ax.plot([0, 0], [0, 30], 'r--')
-            ax.set_xlabel("Tempo (s)")
-            ax.set_ylabel("Aceleração AP")
-            st.pyplot(fig)
+            col1,col2 = st.columns(2)
+            with col1:
+                fig, ax = plt.subplots(figsize=(10, 6))
+                ax.plot(time_interpolated, v_acc, 'k-')
+                for i in range(1,9,1):
+                    ax.plot(time_interpolated[indices_v[i]], v_acc[indices_v[i]], 'ro')
+                ax.plot([0, 0], [0, 30], 'r--')
+                ax.set_xlabel("Tempo (s)")
+                ax.set_ylabel("Aceleração vertical")
+                st.pyplot(fig)
+            with col2:    
+                fig, ax = plt.subplots(figsize=(10, 6))
+                ax.plot(time_interpolated, ap_acc, 'k-')
+                for i in range(1,9,1):
+                    ax.plot(time_interpolated[indices_ap[i]], ap_acc[indices_ap[i]], 'ro')
+                ax.plot([0, 0], [0, 30], 'r--')
+                ax.set_xlabel("Tempo (s)")
+                ax.set_ylabel("Aceleração AP")
+                st.pyplot(fig)
+            
+            rows_v = []
+            i = 1
+            for valor in range(1,9,2):
+                rows_v.append({"ciclo": i, "Latência A1": time_interpolated[indices_v[valor]], "Amplitude A1 V": v_acc[indices_v[valor]],"Latência A2": time_interpolated[indices_v[valor+1]],"Amplitude A2 V": v_acc[indices_v[valor+1]]})
+                i = i + 1
         
-        rows_v = []
-        i = 1
-        for valor in range(1,9,2):
-            rows_v.append({"ciclo": i, "Latência A1": time_interpolated[indices_v[valor]], "Amplitude A1 V": v_acc[indices_v[valor]],"Latência A2": time_interpolated[indices_v[valor+1]],"Amplitude A2 V": v_acc[indices_v[valor+1]]})
-            i = i + 1
-    
-        df_tempos_v = pd.DataFrame(rows_v)
-        st.subheader("Tempos por ciclo — Aceleração vertical")
-        st.dataframe(df_tempos_v, width='stretch')
-    
-        rows_ap = []
-        i = 1
-        for valor in range(1,9,2):
-            rows_ap.append({"ciclo": i, "Latência A1 AP": time_interpolated[indices_ap[valor]], "Amplitude A1 AP": ap_acc[indices_ap[valor]],"Latência A2 AP": time_interpolated[indices_ap[valor+1]],"Amplitude A2 AP": ap_acc[indices_ap[valor+1]]})
-            i = i + 1
-    
-        df_tempos_ap = pd.DataFrame(rows_ap)
-        st.subheader("Tempos por ciclo — Aceleração AP")
-        st.dataframe(df_tempos_ap, width='stretch')
-    
-    
-    
-    
-    
+            df_tempos_v = pd.DataFrame(rows_v)
+            st.subheader("Tempos por ciclo — Aceleração vertical")
+            st.dataframe(df_tempos_v, width='stretch')
+        
+            rows_ap = []
+            i = 1
+            for valor in range(1,9,2):
+                rows_ap.append({"ciclo": i, "Latência A1 AP": time_interpolated[indices_ap[valor]], "Amplitude A1 AP": ap_acc[indices_ap[valor]],"Latência A2 AP": time_interpolated[indices_ap[valor+1]],"Amplitude A2 AP": ap_acc[indices_ap[valor+1]]})
+                i = i + 1
+        
+            df_tempos_ap = pd.DataFrame(rows_ap)
+            st.subheader("Tempos por ciclo — Aceleração AP")
+            st.dataframe(df_tempos_ap, width='stretch')
+        
+        
+        
+        
+        
     
