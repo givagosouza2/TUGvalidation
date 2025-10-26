@@ -28,7 +28,7 @@ def first_min_within(peaks_times, t_on, t_off):
 # App
 # =========================
 st.set_page_config(layout="wide")
-st.title("Análise de Dados: Interpolação, Detrend e Filtro Passa-Baixa")
+st.title("Análise de dados da medidas cinemáticas do TUG")
 
 # defaults de estado que usamos em UI/plot (evita NameError)
 defaults = {
