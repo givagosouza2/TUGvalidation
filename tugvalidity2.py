@@ -94,7 +94,7 @@ if uploaded_file_acc:
       ap_acc = np.sqrt(acc_z_filtered**2)
 
     indices_v, propriedades = find_peaks(v_acc, height = 2, distance = 500)
-    latencia_v = sort(time_interpolated[indices_v[1:8]])
+    latencia_v = np.sort(time_interpolated[indices_v[1:8]])
     indices_ap, propriedades = find_peaks(ap_acc, height = 2, distance = 500)
     
     fig, ax = plt.subplots(figsize=(10, 2))
