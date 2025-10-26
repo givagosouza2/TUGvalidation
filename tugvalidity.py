@@ -30,31 +30,12 @@ def first_min_within(peaks_times, t_on, t_off):
 st.set_page_config(layout="wide")
 st.title("Análise de Dados: Interpolação, Detrend e Filtro Passa-Baixa")
 
-# Estado das abas dinâmicas
-if "show_dyn_tabs" not in st.session_state:
-    st.session_state.show_dyn_tabs = False
-
 # defaults de estado que usamos em UI/plot (evita NameError)
 defaults = {
     "acc_trig": 0.0,  # trigger da aba Acceleration
 }
 for k, v in defaults.items():
     st.session_state.setdefault(k, v)
-
-# Botão global para liberar abas extras
-st.markdown("—")
-col_btn = st.columns([1, 6])[0]
-if not st.session_state.show_dyn_tabs:
-    if col_btn.button("Liberar abas ➜ Aceleração e Velocidade Angular"):
-        st.session_state.show_dyn_tabs = True
-
-# Abas (dinâmicas)
-tab_labels = ["Kinematics"]
-if st.session_state.show_dyn_tabs:
-    tab_labels += ["Acceleration", "Angular velocity"]
-
-tabs = st.tabs(tab_labels)
-tab_map = {label: tabs[i] for i, label in enumerate(tab_labels)}
 
 # Estados para ajustes finos (cinemática)
 for key in ("adj_onset", "adj_offset", "adj_stand", "adj_sit", "adj_peaks"):
