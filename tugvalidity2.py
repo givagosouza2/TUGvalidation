@@ -94,10 +94,9 @@ if uploaded_file_acc:
       ap_acc = np.sqrt(acc_z_filtered**2)
 
     indices_v, propriedades = find_peaks(v_acc, height = 2, distance = 500)
-    picos_ordenados_v_acc = np.sort(v_acc[indices_v])
-    st.text(picos_ordenados_v_acc)
+    
     indices_ap, propriedades = find_peaks(ap_acc, height = 2, distance = 500)
-    picos_ordenados_ap_acc = np.sort(ap_acc[indices_ap])
+    
     fig, ax = plt.subplots(figsize=(10, 2))
     ax.plot(time_interpolated[0:2000], v_acc[0:2000], 'k-')   
     ax.plot([0, 0], [0, 30], 'r--')
@@ -108,7 +107,8 @@ if uploaded_file_acc:
     with col1:
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.plot(time_interpolated, v_acc, 'k-')
-        ax.plot(time_interpolated[picos_ordenados_v_acc], v_acc[picos_ordenados_v_acc], 'ro')
+        for i in range(1,9,1):
+            ax.plot(time_interpolated[indices_v[i]], v_acc[indices_v[i]], 'ro')
         ax.plot([0, 0], [0, 30], 'r--')
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Aceleração vertical")
@@ -117,7 +117,7 @@ if uploaded_file_acc:
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.plot(time_interpolated, ap_acc, 'k-')
         for i in range(1,9,1):
-            ax.plot(time_interpolated[picos_ordenados_ap_acc], ap_acc[picos_ordenados_ap_acc], 'ro')
+            ax.plot(time_interpolated[indices_v[i]], ap_acc[indices_v[i]], 'ro')
         ax.plot([0, 0], [0, 30], 'r--')
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Aceleração AP")
