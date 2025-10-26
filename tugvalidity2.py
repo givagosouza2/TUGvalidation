@@ -125,7 +125,7 @@ if uploaded_file_acc:
     
     rows = []
     i = 1
-    st.text(indice_v)
+    st.text(indices_v)
     for valor in range(1,9,2):
         st.text(valor)
         rows.append({"ciclo": i+1, "Latência A1": latencia_v[valor], "Latência A2": latencia_v[valor+1]})
