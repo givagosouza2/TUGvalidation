@@ -117,7 +117,7 @@ if uploaded_file_acc:
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.plot(time_interpolated, ap_acc, 'k-')
         for i in range(1,9,1):
-            ax.plot(time_interpolated[indices_v[i]], ap_acc[indices_v[i]], 'ro')
+            ax.plot(time_interpolated[indices_ap[i]], ap_acc[indices_ap[i]], 'ro')
         ax.plot([0, 0], [0, 30], 'r--')
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Aceleração AP")
