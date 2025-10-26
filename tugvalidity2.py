@@ -62,7 +62,7 @@ with tab1:
         st.subheader("Controles — Aceleração")
 
         uploaded_file_acc = st.file_uploader(
-            "Arquivo (.csv: X, Y, Z em m/s2)", type=["csv/txt"], key="kin_file"
+            "Arquivo (.txt: X, Y, Z em m/s2)", type=["txt"], key="kin_file"
         )
 
         st.markdown("**Trigger (alinha t=0)**")
