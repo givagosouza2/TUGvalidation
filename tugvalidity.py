@@ -32,7 +32,7 @@ st.title("Análise de Dados: Interpolação, Detrend e Filtro Passa-Baixa")
 
 # defaults de estado que usamos em UI/plot (evita NameError)
 defaults = {
-    "acc_trig": 0.0,  # trigger da aba Acceleration
+    "acc_trig": 0.0,  # trigger da aba Acceleration (reservado p/ futuras abas)
 }
 for k, v in defaults.items():
     st.session_state.setdefault(k, v)
@@ -42,7 +42,7 @@ for key in ("adj_onset", "adj_offset", "adj_stand", "adj_sit", "adj_peaks"):
     if key not in st.session_state:
         st.session_state[key] = {}
 
-# Estados para ajustes finos (aceleração) – já reservados
+# Estados para ajustes finos (aceleração) – reservados para futuras abas
 for key in ("adj_onset_acc", "adj_offset_acc", "adj_peak_acc"):
     if key not in st.session_state:
         st.session_state[key] = {}
@@ -50,7 +50,7 @@ for key in ("adj_onset_acc", "adj_offset_acc", "adj_peak_acc"):
 # =========================
 # TAB: KINEMATICS
 # =========================
-tab1 = st.tabs(1)
+tab1, = st.tabs(["Kinematics"])  # CORREÇÃO: st.tabs recebe uma lista e retorna uma lista de containers
 with tab1:
     # Layout: coluna de controles + coluna de visualização (com subcolunas)
     c_ctrl, c_plot1 = st.columns([0.7, 2])
@@ -65,32 +65,38 @@ with tab1:
         st.markdown("**Trigger (alinha t=0)**")
         trigger_idx_shift = st.number_input("Índice de referência", 0, 100000, 0, 1, key="kin_trig")
 
-        cutoff_kinem = 2
+        # Defaults solicitados: detrend desmarcado, filtro marcado
+        do_detrend = False
+        do_filter = True
+
+        # Parâmetros fixos solicitados
+        cutoff_kinem = 2.0
         prominence = 2.5
         min_distance_samples = 200
 
         st.markdown("**Ajustes finos**")
-        sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1)
-        d_on = st.number_input("Δ Onset (s)", -2.0, 2.0, float(st.session_state["adj_onset"].get(sel_cycle, 0.0)), 0.01)
-        d_off = st.number_input("Δ Offset (s)", -2.0, 2.0, float(st.session_state["adj_offset"].get(sel_cycle, 0.0)), 0.01)
-        d_st = st.number_input("Δ Pico em pé (s)", -2.0, 2.0, float(st.session_state["adj_stand"].get(sel_cycle, 0.0)), 0.01)
-        d_si = st.number_input("Δ Pico para sentar (s)", -2.0, 2.0, float(st.session_state["adj_sit"].get(sel_cycle, 0.0)), 0.01)
+        sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="kin_sel_cycle")
+        d_on = st.number_input("Δ Onset (s)", -2.0, 2.0, float(st.session_state["adj_onset"].get(sel_cycle, 0.0)), 0.01, key="kin_don")
+        d_off = st.number_input("Δ Offset (s)", -2.0, 2.0, float(st.session_state["adj_offset"].get(sel_cycle, 0.0)), 0.01, key="kin_doff")
+        d_st = st.number_input("Δ Pico em pé (s)", -2.0, 2.0, float(st.session_state["adj_stand"].get(sel_cycle, 0.0)), 0.01, key="kin_dst")
+        d_si = st.number_input("Δ Pico para sentar (s)", -2.0, 2.0, float(st.session_state["adj_sit"].get(sel_cycle, 0.0)), 0.01, key="kin_dsi")
+
         st.session_state["adj_onset"][sel_cycle] = d_on
         st.session_state["adj_offset"][sel_cycle] = d_off
         st.session_state["adj_stand"][sel_cycle] = d_st
         st.session_state["adj_sit"][sel_cycle]   = d_si
 
-        sel_peak = st.number_input("Pico (mínimo) 0-index", 0, 9999, 0, 1)
+        sel_peak = st.number_input("Pico (mínimo) 0-index", 0, 9999, 0, 1, key="kin_sel_peak")
         d_pk = st.number_input("Δ Mínimo (s)", -2.0, 2.0, float(st.session_state["adj_peaks"].get(sel_peak, 0.0)), 0.01, key="kin_dpk")
         st.session_state["adj_peaks"][sel_peak] = d_pk
 
         cr1, cr2 = st.columns(2)
-        if cr1.button("Reset ciclo"):
+        if cr1.button("Reset ciclo", key="btn_reset_cycle_kin"):
             st.session_state["adj_onset"].pop(sel_cycle, None)
             st.session_state["adj_offset"].pop(sel_cycle, None)
             st.session_state["adj_stand"].pop(sel_cycle, None)
             st.session_state["adj_sit"].pop(sel_cycle, None)
-        if cr2.button("Reset tudo"):
+        if cr2.button("Reset tudo", key="btn_reset_all_kin"):
             for k in ("adj_onset","adj_offset","adj_stand","adj_sit","adj_peaks"):
                 st.session_state[k].clear()
 
@@ -130,9 +136,11 @@ with tab1:
         onsets, offsets = [], []
         for p in peaks:
             for j in range(p, 1, -1):
-                if disp_y[j] > disp_y[j-1]: onsets.append(j); break
+                if disp_y[j] > disp_y[j-1]:
+                    onsets.append(j); break
             for j in range(p, len(disp_y)-1):
-                if disp_y[j] > disp_y[j+1]: offsets.append(j); break
+                if disp_y[j] > disp_y[j+1]:
+                    offsets.append(j); break
 
         num_ciclos = min(len(onsets), len(offsets))
 
@@ -141,10 +149,12 @@ with tab1:
         for i in range(num_ciclos):
             v = onsets[i]
             a, b = v, min(v+200, len(disp_z))
-            if b > a: stand_times.append(t[a + int(np.argmax(disp_z[a:b]))])
+            if b > a:
+                stand_times.append(t[a + int(np.argmax(disp_z[a:b]))])
             v = offsets[i]
             a, b = max(0, v-400), v
-            if b > a: sit_times.append(t[a + int(np.argmax(disp_z[a:b]))])
+            if b > a:
+                sit_times.append(t[a + int(np.argmax(disp_z[a:b]))])
 
         # tempos ajustados
         onset_times = [t[i] for i in onsets[:num_ciclos]]
@@ -223,4 +233,3 @@ with tab1:
             )
     else:
         st.info("Carregue um arquivo de cinemática para visualizar.")
-
