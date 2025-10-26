@@ -76,8 +76,8 @@ with tab1:
 
         st.markdown("**Ajustes finos**")
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="kin_sel_cycle")
-        d_on = st.number_input("Δ Onset (s)", -2.0, 2.0, float(st.session_state["adj_onset"].get(sel_cycle, 0.0)), 0.01, key="kin_don")
-        d_off = st.number_input("Δ Offset (s)", -2.0, 2.0, float(st.session_state["adj_offset"].get(sel_cycle, 0.0)), 0.01, key="kin_doff")
+        d_on = st.number_input("Δ Início do teste (s)", -2.0, 2.0, float(st.session_state["adj_onset"].get(sel_cycle, 0.0)), 0.01, key="kin_don")
+        d_off = st.number_input("Δ Final do teste (s)", -2.0, 2.0, float(st.session_state["adj_offset"].get(sel_cycle, 0.0)), 0.01, key="kin_doff")
         d_st = st.number_input("Δ Pico em pé (s)", -2.0, 2.0, float(st.session_state["adj_stand"].get(sel_cycle, 0.0)), 0.01, key="kin_dst")
         d_si = st.number_input("Δ Pico para sentar (s)", -2.0, 2.0, float(st.session_state["adj_sit"].get(sel_cycle, 0.0)), 0.01, key="kin_dsi")
 
@@ -86,8 +86,8 @@ with tab1:
         st.session_state["adj_stand"][sel_cycle] = d_st
         st.session_state["adj_sit"][sel_cycle]   = d_si
 
-        sel_peak = st.number_input("Pico (mínimo) 0-index", 0, 9999, 0, 1, key="kin_sel_peak")
-        d_pk = st.number_input("Δ Mínimo (s)", -2.0, 2.0, float(st.session_state["adj_peaks"].get(sel_peak, 0.0)), 0.01, key="kin_dpk")
+        sel_peak = st.number_input("Pico (3 m) 0-index", 0, 9999, 0, 1, key="kin_sel_peak")
+        d_pk = st.number_input("Δ 3 m (s)", -2.0, 2.0, float(st.session_state["adj_peaks"].get(sel_peak, 0.0)), 0.01, key="kin_dpk")
         st.session_state["adj_peaks"][sel_peak] = d_pk
 
         cr1, cr2 = st.columns(2)
@@ -172,7 +172,7 @@ with tab1:
             st.markdown("**Trigger — Cinemática (t = 0)**")
             fig_trig_kin, ax_trig_kin = plt.subplots(figsize=(10, 3))
             nwin = min(2000, len(t))
-            ax_trig_kin.plot(t[:nwin], disp_z[:nwin], 'k-', label="disp_z")
+            ax_trig_kin.plot(t[:nwin], disp_z[:nwin], 'k-', label="Desloc.vertical")
             ax_trig_kin.axvline(0, color='r', label="t=0")
             ax_trig_kin.set_xlabel("Tempo (s)")
             ax_trig_kin.set_ylabel("Amplitude (m)")
@@ -220,8 +220,8 @@ with tab1:
                 t_st = stand_adj[i] if i < len(stand_adj) else np.nan
                 t_si = sit_adj[i]   if i < len(sit_adj)   else np.nan
                 t_min = first_min_within(peak_adj, t_on, t_off)
-                rows.append({"ciclo": i, "onset_s": t_on, "offset_s": t_off,
-                             "pico_em_pe_s": t_st, "pico_para_sentar_s": t_si, "minimo_s": t_min})
+                rows.append({"ciclo": i, "inicio_s": t_on, "final_s": t_off,
+                             "pico_em_pe_s": t_st, "pico_para_sentar_s": t_si, "3m_s": t_min})
             df_tempos = pd.DataFrame(rows)
             st.subheader("Tempos por ciclo — Cinemática")
             st.dataframe(df_tempos, width='stretch')
