@@ -115,7 +115,7 @@ if uploaded_file_acc:
     with col2:    
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.plot(time_interpolated, ap_acc, 'k-')
-        ax.plot(time_interpolated[picos_ordenados_ap_acc], ap_acc[picos_ordenados_ap_acc], 'ro')
+        ax.plot(time_interpolated[indices_ap[picos_ordenados_ap_acc]], ap_acc[indices_ap[picos_ordenados_ap_acc]], 'ro')
         ax.plot([0, 0], [0, 30], 'r--')
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Amplitude")
