@@ -125,7 +125,7 @@ if uploaded_file_acc:
     
     rows = []
     i = 1
-    for valor in range(0,8,2):
+    for valor in range(0,6,2):
         rows.append({"ciclo": i+1, "Latência A1": latencia_v[valor], "Latência A2": latencia_v[valor+1]})
         i = i + 1
 
