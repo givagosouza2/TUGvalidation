@@ -107,7 +107,7 @@ if uploaded_file_acc:
     with col1:
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.plot(time_interpolated, v_acc, 'k-')
-        for i in range(1,8,1):
+        for i in range(1,9,1):
             ax.plot(time_interpolated[indices_v[picos_ordenados_v_acc[i]]], v_acc[indices_v[picos_ordenados_v_acc[i]]], 'ro')
         ax.plot([0, 0], [0, 30], 'r--')
         ax.set_xlabel("Tempo (s)")
@@ -116,7 +116,8 @@ if uploaded_file_acc:
     with col2:    
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.plot(time_interpolated, ap_acc, 'k-')
-        ax.plot(time_interpolated[indices_ap[picos_ordenados_ap_acc]], ap_acc[indices_ap[picos_ordenados_ap_acc]], 'ro')
+        for i in range(1,9,1):
+        ax.plot(time_interpolated[indices_ap[picos_ordenados_ap_acc[i]]], ap_acc[indices_ap[picos_ordenados_ap_acc[i]]], 'ro')
         ax.plot([0, 0], [0, 30], 'r--')
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Aceleração AP")
