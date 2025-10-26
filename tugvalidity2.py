@@ -94,8 +94,7 @@ if uploaded_file_acc:
       ap_acc = np.sqrt(acc_z_filtered**2)
 
     indices_v, propriedades = find_peaks(v_acc, height = 2, distance = 500)
-    st.text(time_interpolated[indices_v])
-    latencia_v = np.sort(time_interpolated[indices_v[1:-1]])
+    
     indices_ap, propriedades = find_peaks(ap_acc, height = 2, distance = 500)
     
     fig, ax = plt.subplots(figsize=(10, 2))
@@ -126,8 +125,8 @@ if uploaded_file_acc:
     
     rows = []
     i = 1
-    st.text(latencia_v)
-    for valor in range(0,8,2):
+    st.text(indice_v)
+    for valor in range(1,9,2):
         st.text(valor)
         rows.append({"ciclo": i+1, "Latência A1": latencia_v[valor], "Latência A2": latencia_v[valor+1]})
         i = i + 1
