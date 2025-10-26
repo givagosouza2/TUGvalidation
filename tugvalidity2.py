@@ -130,17 +130,17 @@ if uploaded_file_acc:
         rows.append({"ciclo": i, "Latência A1": time_interpolated[indices_v[valor]], "Amplitude A1 V": v_acc[indices_v[valor]],"Latência A2": time_interpolated[indices_v[valor+1]],"Amplitude A2 V": v_acc[indices_v[valor+1]]})
         i = i + 1
 
-    df_tempos = pd.DataFrame(rows)
+    df_tempos_v = pd.DataFrame(rows)
     st.subheader("Tempos por ciclo — Aceleração vertical")
-    st.dataframe(df_tempos, width='stretch')
+    st.dataframe(df_tempos_v, width='stretch')
 
     for valor in range(1,9,2):
         rows.append({"ciclo": i, "Latência A1": time_interpolated[indices_ap[valor]], "Amplitude A1 AP": ap_acc[indices_v[valor]],"Latência A2": time_interpolated[indices_ap[valor+1]],"Amplitude A2 AP": ap_acc[indices_v[valor+1]]})
         i = i + 1
 
-    df_tempos = pd.DataFrame(rows)
+    df_tempos_ap = pd.DataFrame(rows)
     st.subheader("Tempos por ciclo — Aceleração AP")
-    st.dataframe(df_tempos, width='stretch')
+    st.dataframe(df_tempos_ap, width='stretch')
 
 
 
