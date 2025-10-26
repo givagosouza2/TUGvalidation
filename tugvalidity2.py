@@ -61,8 +61,8 @@ with tab1:
     with c_ctrl:
         st.subheader("Controles — Aceleração")
 
-        uploaded_file_kinem = st.file_uploader(
-            "Arquivo (.csv: X, Y, Z em m/s2)", type=["csv"], key="kin_file"
+        uploaded_file_acc = st.file_uploader(
+            "Arquivo (.csv: X, Y, Z em m/s2)", type=["csv/txt"], key="kin_file"
         )
 
         st.markdown("**Trigger (alinha t=0)**")
@@ -92,10 +92,7 @@ with tab1:
         if cr2.button("Reset tudo", key="btn_reset_all_kin"):
             for k in ("adj_onset","adj_offset"):
                 st.session_state[k].clear()
-    
-    # Carregar o arquivo de texto
-    uploaded_file_acc = st.file_uploader(
-        "Escolha um arquivo do acelerômetro do smartphone", type=["txt"])
+        
     # Lê o arquivo como DataFrame
     if uploaded_file_acc:
         df = pd.read_csv(uploaded_file_acc, sep=";", engine='python')
