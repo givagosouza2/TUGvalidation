@@ -122,6 +122,8 @@ if uploaded_file_acc:
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Aceleração AP")
         st.pyplot(fig)
+    
+    rows = []
     for valor in range(1,7,2):
         rows.append({"ciclo": i, "Latência A1": latência_v[i], "Latência A2": latência_v[i+1]})
         df_tempos = pd.DataFrame(rows)
