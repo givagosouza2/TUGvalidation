@@ -96,8 +96,7 @@ if uploaded_file_acc:
     indices, propriedades = find_peaks(v_acc, height = 2, distance = 500)
     picos_ordenados = np.argsort(ap_acc[indices])[-2:] 
     fig, ax = plt.subplots(figsize=(10, 2))
-    ax.plot(time_interpolated[0:2000], v_acc[0:2000], 'k-')
-    ax.plot(time_interpolated[indices], v_acc[indices], 'ro')
+    ax.plot(time_interpolated[0:2000], v_acc[0:2000], 'k-')   
     ax.plot([0, 0], [0, 30], 'r--')
     ax.set_xlabel("Tempo (s)")
     ax.set_ylabel("Amplitude")
@@ -106,6 +105,7 @@ if uploaded_file_acc:
     with col1:
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.plot(time_interpolated, v_acc, 'k-')
+        ax.plot(time_interpolated[indices], v_acc[indices], 'ro')
         ax.plot([0, 0], [0, 30], 'r--')
         ax.set_xlabel("Tempo (s)")
         ax.set_ylabel("Amplitude")
