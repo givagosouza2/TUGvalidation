@@ -125,7 +125,7 @@ if uploaded_file_acc:
     
     rows = []
     for valor in range(1,7,2):
-        rows.append({"ciclo": i, "Latência A1": latencia_v[i], "Latência A2": latencia_v[i+1]})
+        rows.append({"ciclo": i, "Latência A1": latencia_v[valor], "Latência A2": latencia_v[valor+1]})
         df_tempos = pd.DataFrame(rows)
         
 
