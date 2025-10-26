@@ -50,7 +50,7 @@ for key in ("adj_onset_acc", "adj_offset_acc", "adj_peak_acc"):
 # =========================
 # TAB: KINEMATICS
 # =========================
-tab1 = st.tab(1)
+tab1 = st.tabs(1)
 with tab1:
     # Layout: coluna de controles + coluna de visualização (com subcolunas)
     c_ctrl, c_plot1 = st.columns([0.7, 2])
