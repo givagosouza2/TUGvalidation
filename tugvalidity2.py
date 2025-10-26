@@ -95,6 +95,7 @@ if uploaded_file_acc:
 
     indices_v, propriedades = find_peaks(v_acc, height = 2, distance = 500)
     picos_ordenados_v_acc = np.sort(v_acc[indices_v])
+    st.text(picos_ordenados_v_acc)
     indices_ap, propriedades = find_peaks(ap_acc, height = 2, distance = 500)
     picos_ordenados_ap_acc = np.sort(ap_acc[indices_ap])
     fig, ax = plt.subplots(figsize=(10, 2))
