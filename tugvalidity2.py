@@ -125,7 +125,6 @@ if uploaded_file_acc:
     
     rows_v = []
     i = 1
-
     for valor in range(1,9,2):
         rows_v.append({"ciclo": i, "Latência A1": time_interpolated[indices_v[valor]], "Amplitude A1 V": v_acc[indices_v[valor]],"Latência A2": time_interpolated[indices_v[valor+1]],"Amplitude A2 V": v_acc[indices_v[valor+1]]})
         i = i + 1
@@ -135,6 +134,7 @@ if uploaded_file_acc:
     st.dataframe(df_tempos_v, width='stretch')
 
     rows_ap = []
+    i = 1
     for valor in range(1,9,2):
         rows_ap.append({"ciclo": i, "Latência A1": time_interpolated[indices_ap[valor]], "Amplitude A1 AP": ap_acc[indices_v[valor]],"Latência A2": time_interpolated[indices_ap[valor+1]],"Amplitude A2 AP": ap_acc[indices_v[valor+1]]})
         i = i + 1
