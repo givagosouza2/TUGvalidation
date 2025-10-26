@@ -99,6 +99,22 @@ if uploaded_file_acc:
     ax.set_xlabel("Tempo (s)")
     ax.set_ylabel("Amplitude")
     st.pyplot(fig)
+    col1,col2 = st.columns:
+    with col1:
+        fig, ax = plt.subplots(figsize=(10, 2))
+        ax.plot(time_interpolated, v_acc, 'k-')
+        ax.plot([0, 0], [0, 30], 'r--')
+        ax.set_xlabel("Tempo (s)")
+        ax.set_ylabel("Amplitude")
+        st.pyplot(fig)
+    with col2:    
+        fig, ax = plt.subplots(figsize=(10, 2))
+        ax.plot(time_interpolated, ap_acc, 'k-')
+        ax.plot([0, 0], [0, 30], 'r--')
+        ax.set_xlabel("Tempo (s)")
+        ax.set_ylabel("Amplitude")
+        st.pyplot(fig)
+        
 
 
 
