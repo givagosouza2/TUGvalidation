@@ -136,7 +136,7 @@ if uploaded_file_acc:
     rows_ap = []
     i = 1
     for valor in range(1,9,2):
-        rows_ap.append({"ciclo": i, "Latência A1": time_interpolated[indices_ap[valor]], "Amplitude A1 AP": ap_acc[indices_v[valor]],"Latência A2": time_interpolated[indices_ap[valor+1]],"Amplitude A2 AP": ap_acc[indices_v[valor+1]]})
+        rows_ap.append({"ciclo": i, "Latência A1 AP": time_interpolated[indices_ap[valor]], "Amplitude A1 AP": ap_acc[indices_ap[valor]],"Latência A2 AP": time_interpolated[indices_ap[valor+1]],"Amplitude A2 AP": ap_acc[indices_ap[valor+1]]})
         i = i + 1
 
     df_tempos_ap = pd.DataFrame(rows_ap)
