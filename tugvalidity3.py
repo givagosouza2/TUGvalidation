@@ -66,7 +66,7 @@ with tab1:
 
         # Parâmetros de detecção
         height_thresh = 1.25
-        distance_samples = 250  # amostras na malha reamostrada (100 Hz → 0.5 s)
+        distance_samples = 200  # amostras na malha reamostrada (100 Hz → 0.5 s)
 
         st.markdown("**Ajustes finos por ciclo (aplicados a V e ML)**")
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="gyro_sel_cycle")
