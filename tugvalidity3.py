@@ -213,8 +213,7 @@ with tab1:
             st.markdown("**Trigger — Velocidade angular (t = 0)**")
             fig_trig, ax_trig = plt.subplots(figsize=(10, 2))
             nwin = min(2000, len(t))
-            ax_trig.plot(t[:nwin], norm[:nwin], 'k-', label="‖ω‖")
-            ax_trig.axvline(t[intervalos], color='r', label="t=0")
+            ax_trig.plot(t[:nwin], norm[:nwin], 'k-', label="‖ω‖")            
             ax_trig.axvline(0, color='r', label="t=0")
             ax_trig.set_xlabel("Tempo (s)")
             ax_trig.set_ylabel("Velocidade angular (rad/s)")
@@ -228,6 +227,7 @@ with tab1:
                 fig_v, ax_v = plt.subplots(figsize=(10, 6))
                 ax_v.plot(t, v_gyro, 'k-', label='Vertical (|ω_y|)')
                 ax_v.plot(t, media_movel, 'r-', label='Vertical (|ω_y|)')
+                ax_v.plot([t[intervalos],t[intervalos]],[0,5] color='r')
                 ax_v.axvline(0, color='r', ls='--', label="t=0")
 
                 for i in range(num_ciclos):
