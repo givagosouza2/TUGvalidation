@@ -167,7 +167,15 @@ with tab1:
         t_min, t_max = float(t[0]), float(t[-1])
 
         serie = pd.Series(v_gyro)
-        media_movel = serie.rolling(window=100).mean()
+        # Parâmetros
+        window = 20
+        threshold = 0.3  # Limite para marcar no gráfico
+
+        # Média móvel
+        media_movel = pd.Series(sinal).rolling(window=window, min_periods=1).mean()
+
+        # Índices onde a média móvel ultrapassa o limite
+        idx_acima = np.where(media_movel > threshold)[0]
         
         # 6) Picos: V e ML
         indices_v, _  = find_peaks(v_gyro,  height=height_thresh, distance=distance_samples)
@@ -205,6 +213,7 @@ with tab1:
             fig_trig, ax_trig = plt.subplots(figsize=(10, 2))
             nwin = min(2000, len(t))
             ax_trig.plot(t[:nwin], norm[:nwin], 'k-', label="‖ω‖")
+            ax_trig.axvline(t[idx_acima], color='r', label="t=0")
             ax_trig.axvline(0, color='r', label="t=0")
             ax_trig.set_xlabel("Tempo (s)")
             ax_trig.set_ylabel("Velocidade angular (rad/s)")
