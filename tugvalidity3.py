@@ -194,10 +194,22 @@ with tab1:
         intervalos = [x - 250 for x in intervalos]
 
         indices_v = []
-        for i in range(0,len(intervalos)/2,2)
-            # 6) Picos: V e ML
-            pos, _  = find_peaks(v_gyro[intervalos[i]:[intervalos[i+1]],  height=height_thresh, distance=distance_samples)
-            indices_v.append(pos)
+
+        for i in range(0, len(intervalos), 2):
+            if i+1 < len(intervalos):  # evita erro de índice ímpar
+                ini = intervalos[i]
+                fim = intervalos[i+1]
+        
+                pos_local, _ = find_peaks(
+                    v_gyro[ini:fim],
+                    height=height_thresh,
+                    distance=distance_samples
+                )
+        
+                # converte os índices locais para índices absolutos
+                pos_global = ini + pos_local
+        
+                indices_v.extend(pos_global)
             
         indices_ml, _ = find_peaks(ml_gyro, height=height_thresh, distance=distance_samples)
 
