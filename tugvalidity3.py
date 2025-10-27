@@ -168,7 +168,7 @@ with tab1:
 
         # Ignora o primeiro como artefato (mantém seu padrão anterior)
         indices_v = indices_v[1:] if len(indices_v) > 1 else indices_v
-        indices_ml = indices_ml[1:] if len(indices_ap) > 1 else indices_ap
+        indices_ml = indices_ml[1:] if len(indices_ml) > 1 else indices_ap
 
         # 7) Agrupa em ciclos (pares sucessivos A1/A2)
         def build_cycles(indices):
@@ -177,10 +177,10 @@ with tab1:
             return [(indices[2*i], indices[2*i+1]) for i in range(n_pairs)]
 
         cycles_v = build_cycles(indices_v)
-        cycles_ap = build_cycles(indices_ap)
+        cycles_ml = build_cycles(indices_ml)
 
         # usa o mínimo de ciclos disponíveis entre V e AP para tabelas comparáveis
-        num_ciclos = min(len(cycles_v), len(cycles_ap))
+        num_ciclos = min(len(cycles_v), len(cycles_ml))
 
         # 8) Aplica ajustes por ciclo (Δ A1, Δ A2) e constrói tabelas
         rows_v, rows_ap = [], []
@@ -189,13 +189,13 @@ with tab1:
         # Plotagem
         with c_plot1:
             # Trigger plot (janela inicial)
-            st.markdown("**Trigger — Aceleração (t = 0)**")
+            st.markdown("**Trigger — Velocidade angular (t = 0)**")
             fig_trig, ax_trig = plt.subplots(figsize=(10, 2))
             nwin = min(2000, len(t))
             ax_trig.plot(t[:nwin], norm[:nwin], 'k-', label="V (|ax| ou |ay|)")
             ax_trig.axvline(0, color='r', label="t=0")
             ax_trig.set_xlabel("Tempo (s)")
-            ax_trig.set_ylabel("Aceleração")
+            ax_trig.set_ylabel("Velocidade angular (rad/s)")
             ax_trig.legend(loc="lower left")
             st.pyplot(fig_trig)
 
