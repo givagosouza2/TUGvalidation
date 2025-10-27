@@ -194,6 +194,7 @@ with tab1:
         intervalos = [x - 250 for x in intervalos]
 
         indices_v = []
+        ppc = []
 
         for i in range(0, len(intervalos), 2):
             if i+1 < len(intervalos):  # evita erro de índice ímpar
@@ -211,11 +212,13 @@ with tab1:
         
                 # converte os índices locais para índices absolutos
                 pos_global = ini + pos_local
+                
+                ppc.append(len(pos_global))
         
                 indices_v.extend(pos_global)
             
         indices_ml, _ = find_peaks(ml_gyro, distance=150)
-
+        st.text(ppc)
         # avisos úteis
         if len(indices_v) < 2 or len(indices_ml) < 2:
             st.warning("Poucos picos detectados em V ou ML. Ajuste 'height'/'distance' ou verifique o sinal.")
