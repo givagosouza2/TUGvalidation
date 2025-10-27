@@ -218,6 +218,7 @@ with tab1:
                 indices_v.extend(pos_global)
             
         indices_ml, _ = find_peaks(ml_gyro, distance=150)
+        st.text(indices_v)
         st.text(ppc)
         # avisos úteis
         if len(indices_v) < 2 or len(indices_ml) < 2:
