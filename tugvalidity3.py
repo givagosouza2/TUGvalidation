@@ -68,7 +68,7 @@ with tab1:
 
         # Parâmetros de detecção
         height_thresh = 2.0
-        distance_samples = 200  # em amostras do vetor reamostrado
+        distance_samples = 50  # em amostras do vetor reamostrado
 
         st.markdown("**Ajustes finos por ciclo (aplicados à V e AP)**")
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="gyro_sel_cycle")
@@ -165,6 +165,7 @@ with tab1:
         # 6) Picos: V e AP (máximos)
         indices_v, _ = find_peaks(v_gyro, height=height_thresh, distance=distance_samples)
         indices_ml, _ = find_peaks(ml_gyro, height=height_thresh, distance=distance_samples)
+        st.text(indices_v)
 
         # Ignora o primeiro como artefato (mantém seu padrão anterior)
         indices_v = indices_v[1:] if len(indices_v) > 1 else indices_v
