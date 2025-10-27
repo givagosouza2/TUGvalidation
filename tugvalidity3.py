@@ -202,7 +202,6 @@ with tab1:
         
                 pos_local, _ = find_peaks(
                     v_gyro[ini:fim],
-                    height=height_thresh,
                     distance=distance_samples
                 )
         
