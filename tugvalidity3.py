@@ -183,7 +183,7 @@ with tab1:
         num_ciclos = min(len(cycles_v), len(cycles_ml))
 
         # 8) Aplica ajustes por ciclo (Δ A1, Δ A2) e constrói tabelas
-        rows_v, rows_ap = [], []
+        rows_v, rows_ml = [], []
         t_min, t_max = float(t[0]), float(t[-1])
 
         # Plotagem
@@ -261,7 +261,7 @@ with tab1:
                     ax_ml.axvline(a1_t_adj, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
                     ax_ml.axvline(a2_t_adj, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
 
-                    # tabela AP
+                    # tabela ML
                     rows_ml.append({
                         "ciclo": i,
                         "A1_t(s)": a1_t_adj,
