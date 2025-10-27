@@ -204,7 +204,7 @@ with tab1:
         
                 pos_local, _ = find_peaks(
                     v_gyro[ini:fim],
-                    height = 1.5,
+                    width = 5,
                 )
         
                 # converte os índices locais para índices absolutos
