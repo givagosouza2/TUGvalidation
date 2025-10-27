@@ -211,7 +211,7 @@ with tab1:
         
                 indices_v.extend(pos_global)
             
-        indices_ml, _ = find_peaks(ml_gyro, height=height_thresh, distance=distance_samples)
+        indices_ml, _ = find_peaks(ml_gyro, distance=distance_samples)
 
         # avisos úteis
         if len(indices_v) < 2 or len(indices_ml) < 2:
