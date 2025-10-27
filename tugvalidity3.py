@@ -178,12 +178,15 @@ with tab1:
         seq = 0
         for index,valor in enumerate(media_movel):
             if valor > threshold and chave == 0 and seq == 0:
+                st.text('A')
                 intervalos.append(index)
                 chave = 1
             elif valor < threshold and chave == 1 and seq < 2:
+                st.text('B')
                 chave = 1
                 seq = seq + 1
             elif valor < threshold and chave == 1 and seq > 2:
+                st.text('C')
                 intervalos.append(index)
                 chave = 0
                 seq = 0    
