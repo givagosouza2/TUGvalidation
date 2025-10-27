@@ -168,7 +168,7 @@ with tab1:
 
         serie = pd.Series(v_gyro)
         # Parâmetros
-        window = 100
+        window = 250
         threshold = 0.45  # Limite para marcar no gráfico
 
         # Média móvel
