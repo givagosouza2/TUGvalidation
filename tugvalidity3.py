@@ -178,20 +178,20 @@ with tab1:
         seq = 0
         for index,valor in enumerate(media_movel):
             if valor > threshold and chave == 0 and seq == 0:
-                st.text('A')
+                
                 intervalos.append(index)
                 chave = 1
             elif valor < threshold and chave == 1 and seq <= 2:
-                st.text('B')
+                
                 chave = 1
                 seq = seq + 1
             elif valor < threshold and chave == 1 and seq > 2:
-                st.text('C')
+                
                 intervalos.append(index)
                 chave = 0
                 seq = 0    
                 
-        intervalos = intervalos - 400
+        intervalos -= 400
         # 6) Picos: V e ML
         indices_v, _  = find_peaks(v_gyro,  height=height_thresh, distance=distance_samples)
         indices_ml, _ = find_peaks(ml_gyro, height=height_thresh, distance=distance_samples)
