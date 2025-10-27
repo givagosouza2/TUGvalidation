@@ -181,7 +181,7 @@ with tab1:
                 st.text('A')
                 intervalos.append(index)
                 chave = 1
-            elif valor < threshold and chave == 1 and seq < 2:
+            elif valor < threshold and chave == 1 and seq <= 2:
                 st.text('B')
                 chave = 1
                 seq = seq + 1
