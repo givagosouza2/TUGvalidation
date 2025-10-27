@@ -98,7 +98,7 @@ with tab1:
             st.session_state["adj_offset"].clear()
 
     # ===== Processamento =====
-    if uploaded_file_acc is not None:
+    if uploaded_file_gyro is not None:
         # 1) Lê arquivo: tempo(ms); ax; ay; az com ';'
         df = pd.read_csv(uploaded_file_gyro, sep=";", engine="python")
         if df.shape[1] < 4:
