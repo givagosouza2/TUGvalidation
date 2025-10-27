@@ -194,7 +194,7 @@ with tab1:
         intervalos = [x - 250 for x in intervalos]
 
         indices_v = []
-        for i in range(1,len(intervalos)/2,2)
+        for i in range(0,len(intervalos)/2,2)
             # 6) Picos: V e ML
             pos, _  = find_peaks(v_gyro[intervalos[i]:v_gyro[intervalos[i+1]],  height=height_thresh, distance=distance_samples)
             indices_v.append(pos)
