@@ -288,3 +288,12 @@ with tab1:
             st.subheader("Tempos por ciclo — Aceleração Antero-Posterior (AP)")
             df_tempos_ap = pd.DataFrame(rows_ap)
             st.dataframe(df_tempos_ap, width='stretch')
+            df_join = df_tempos_v.merge(df_tempos_ap, on="ciclo", suffixes=("_V", "_AP"))
+
+            st.download_button(
+                "📦 Exportar CSV com V + AP",
+                df_join.to_csv(index=False).encode("utf-8"),
+                file_name="tempos_tug.csv",
+                mime="text/csv",
+                key="btn_export_merged"
+            )
