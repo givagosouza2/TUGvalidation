@@ -180,7 +180,7 @@ with tab1:
             if valor > threshold and chave == 0:
                 intervalos.append(index)
                 chave = 1
-            elif valor < threshold and chave == 1 and seq == 0:
+            elif valor < threshold and chave == 1 and seq < 2:
                 chave = 1
                 seq = seq + 1
             elif valor < threshold and chave == 1 and seq > 2:
