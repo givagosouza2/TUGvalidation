@@ -167,7 +167,7 @@ with tab1:
         t_min, t_max = float(t[0]), float(t[-1])
 
         serie = pd.Series(v_gyro)
-        media_movel = serie.rolling(window=20).mean()
+        media_movel = serie.rolling(window=100).mean()
         
         # 6) Picos: V e ML
         indices_v, _  = find_peaks(v_gyro,  height=height_thresh, distance=distance_samples)
