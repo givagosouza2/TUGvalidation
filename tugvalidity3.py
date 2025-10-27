@@ -181,9 +181,9 @@ with tab1:
                 intervalos.append(index)
                 chave = 1
             elif valor < threshold and chave == 1 and seq == 0:
-                chave = 0
+                chave = 1
                 seq = seq + 1
-            elif valor < threshold and chave == 1 and seq > 0:
+            elif valor < threshold and chave == 1 and seq > 5:
                 intervalos.append(index)
                 chave = 0
                 seq = 0    
