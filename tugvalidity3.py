@@ -29,15 +29,15 @@ st.info(
 )
 
 # defaults de estado que usamos em UI/plot (evita NameError)
-if "acc_trig" not in st.session_state:
-    st.session_state["acc_trig"] = 0.0  # futuro: trigger em segundos, se usar vetor de tempo absoluto
+if "gyro_trig" not in st.session_state:
+    st.session_state["gyro_trig"] = 0.0  # futuro: trigger em segundos, se usar vetor de tempo absoluto
 
 # Estados para ajustes finos (acelerômetro): por ciclo (0,1,2,...)
 for key in ("adj_onset", "adj_offset"):
     if key not in st.session_state:
         st.session_state[key] = {}
 
-tab1, = st.tabs(["Acceleration"])
+tab1, = st.tabs(["Angular velocity"])
 with tab1:
     # Layout: coluna de controles + coluna de visualização (com subcolunas)
     c_ctrl, c_plot1 = st.columns([0.7, 2])
@@ -45,7 +45,7 @@ with tab1:
     with c_ctrl:
         st.subheader("Controles — Velocidade angular")
 
-        uploaded_file_acc = st.file_uploader(
+        uploaded_file_gyro = st.file_uploader(
             "Arquivo (.txt: tempo(ms); ax; ay; az) — separador ';'",
             type=["txt"],
             key="acc_file",
