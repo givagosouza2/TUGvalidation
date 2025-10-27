@@ -72,14 +72,14 @@ with tab1:
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="gyro_sel_cycle")
         d_on = st.number_input(
             "Δ Tempo de A1 (s)",
-            -2.0, 2.0,
+            -10.0, 10.0,
             float(st.session_state["adj_onset"].get(sel_cycle, 0.0)),
             0.01,
             key="gyro_dA1",
         )
         d_off = st.number_input(
             "Δ Tempo de A2 (s)",
-            -2.0, 2.0,
+            -10.0, 10.0,
             float(st.session_state["adj_offset"].get(sel_cycle, 0.0)),
             0.01,
             key="gyro_dA2",
@@ -200,9 +200,7 @@ with tab1:
             if i+1 < len(intervalos):  # evita erro de índice ímpar
                 ini = intervalos[i]
                 fim = intervalos[i+1]
-                st.text(ini)
-                st.text(fim)
-        
+                        
                 pos_local, _ = find_peaks(
                     v_gyro[ini:fim],
                     width = 20,
@@ -218,8 +216,7 @@ with tab1:
                 indices_v.extend(pos_global)
             
         indices_ml, _ = find_peaks(ml_gyro, distance=150)
-        st.text(indices_v)
-        st.text(ppc)
+        
         # avisos úteis
         if len(indices_v) < 2 or len(indices_ml) < 2:
             st.warning("Poucos picos detectados em V ou ML. Ajuste 'height'/'distance' ou verifique o sinal.")
@@ -238,10 +235,6 @@ with tab1:
 
         num_ciclos = min(len(cycles_v), len(cycles_ml))
         rows_v, rows_ml = [], []
-
-        
-
-        
 
         # =========================
         # Plotagem
