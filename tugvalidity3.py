@@ -169,14 +169,20 @@ with tab1:
         serie = pd.Series(v_gyro)
         # Parâmetros
         window = 200
-        threshold = 0.3  # Limite para marcar no gráfico
+        threshold = 0.5  # Limite para marcar no gráfico
 
         # Média móvel
         media_movel = pd.Series(v_gyro).rolling(window=window, min_periods=1).mean()
         intervalos = []
+        chave = 0
         for index,valor in enumerate(media_movel):
-            if valor > threshold:
+            if valor > threshold and chave == 0:
                 intervalos.append(index)
+                chave = 1
+            elif valor < threshold and chave == 1:
+                intervalos.append(index)
+                chave = 0
+                
         
         # 6) Picos: V e ML
         indices_v, _  = find_peaks(v_gyro,  height=height_thresh, distance=distance_samples)
