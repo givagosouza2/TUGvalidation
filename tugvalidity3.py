@@ -203,7 +203,7 @@ with tab1:
                 pos_local, _ = find_peaks(
                     v_gyro[ini:fim],
                     height = 2,
-                    distance=100
+                    distance=50
                 )
         
                 # converte os índices locais para índices absolutos
