@@ -175,13 +175,18 @@ with tab1:
         media_movel = pd.Series(v_gyro).rolling(window=window, min_periods=1).mean()
         intervalos = []
         chave = 0
+        seq = 0
         for index,valor in enumerate(media_movel):
             if valor > threshold and chave == 0:
                 intervalos.append(index)
                 chave = 1
-            elif valor < threshold and chave == 1:
+            elif valor < threshold and chave == 1 and seq == 0:
+                chave = 0
+                seq = seq + 1
+            elif valor < threshold and chave == 1 and seq > 0:
                 intervalos.append(index)
                 chave = 0
+                seq = 0    
                 
         
         # 6) Picos: V e ML
