@@ -206,7 +206,7 @@ with tab1:
                     v_gyro[ini:fim],
                     width = 20,
                     height = 1,
-                    distance = 50
+                    distance = 75
                 )
         
                 # converte os índices locais para índices absolutos
