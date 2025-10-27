@@ -238,14 +238,14 @@ with tab1:
                 ax_v.legend(loc="lower left")
                 st.pyplot(fig_v)
 
-            # ---- Coluna 2: AP ----
+            # ---- Coluna 2: ML ----
             with c2:
-                fig_ap, ax_ap = plt.subplots(figsize=(10, 6))
-                ax_ap.plot(t, ml_gyro, 'k-', label='AP')
-                ax_ap.axvline(0, color='r', ls='--', label="t=0")
+                fig_ml, ax_ml = plt.subplots(figsize=(10, 6))
+                ax_ml.plot(t, ml_gyro, 'k-', label='ML')
+                ax_ml.axvline(0, color='r', ls='--', label="t=0")
 
                 for i in range(num_ciclos):
-                    a1_idx, a2_idx = cycles_ap[i]
+                    a1_idx, a2_idx = cycles_ml[i]
                     a1_t = t[a1_idx]
                     a2_t = t[a2_idx]
                     # usa os mesmos ajustes por ciclo (Δ A1/A2)
@@ -255,14 +255,14 @@ with tab1:
                     a2_t_adj = clamp(a2_t + da2, t_min, t_max)
 
                     # pontos originais
-                    ax_ap.plot(t[a1_idx], ml_gyro[a1_idx], 'ro')
-                    ax_ap.plot(t[a2_idx], ml_gyro[a2_idx], 'ro')
+                    ax_ml.plot(t[a1_idx], ml_gyro[a1_idx], 'ro')
+                    ax_ml.plot(t[a2_idx], ml_gyro[a2_idx], 'ro')
                     # linhas ajustadas
-                    ax_ap.axvline(a1_t_adj, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
-                    ax_ap.axvline(a2_t_adj, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
+                    ax_ml.axvline(a1_t_adj, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
+                    ax_ml.axvline(a2_t_adj, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
 
                     # tabela AP
-                    rows_ap.append({
+                    rows_ml.append({
                         "ciclo": i,
                         "A1_t(s)": a1_t_adj,
                         "A1_amp(AP)": float(ml_gyro[a1_idx]),
@@ -270,20 +270,20 @@ with tab1:
                         "A2_amp(AP)": float(ml_gyro[a2_idx]),
                     })
 
-                ax_ap.set_xlabel("Tempo (s)")
-                ax_ap.set_ylabel("Velocidade angular (ML)")
-                ax_ap.legend(loc="lower left")
-                st.pyplot(fig_ap)
+                ax_ml.set_xlabel("Tempo (s)")
+                ax_ml.set_ylabel("Velocidade angular (ML)")
+                ax_ml.legend(loc="lower left")
+                st.pyplot(fig_ml)
 
             # ===== Tabelas =====
-            st.subheader("Tempos por ciclo — Aceleração Vertical (V)")
+            st.subheader("Tempos por ciclo — Velocidade angular (V)")
             df_tempos_v = pd.DataFrame(rows_v)
             st.dataframe(df_tempos_v, width='stretch')
 
-            st.subheader("Tempos por ciclo — Aceleração Antero-Posterior (AP)")
-            df_tempos_ap = pd.DataFrame(rows_ap)
-            st.dataframe(df_tempos_ap, width='stretch')
-            df_join = df_tempos_v.merge(df_tempos_ap, on="ciclo", suffixes=("_V", "_AP"))
+            st.subheader("Tempos por ciclo — Velocidade angular (AP)")
+            df_tempos_ml = pd.DataFrame(rows_ml)
+            st.dataframe(df_tempos_ml, width='stretch')
+            df_join = df_tempos_v.merge(df_tempos_ml, on="ciclo", suffixes=("_V", "_AP"))
 
             st.download_button(
                 "Baixar CSV (Acc)",
