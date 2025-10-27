@@ -176,7 +176,7 @@ with tab1:
         intervalos = []
         for index,valor in enumerate(media_movel):
             if valor > threshold:
-                intervalo.append(index)
+                intervalos.append(index)
         
         # 6) Picos: V e ML
         indices_v, _  = find_peaks(v_gyro,  height=height_thresh, distance=distance_samples)
@@ -214,7 +214,7 @@ with tab1:
             fig_trig, ax_trig = plt.subplots(figsize=(10, 2))
             nwin = min(2000, len(t))
             ax_trig.plot(t[:nwin], norm[:nwin], 'k-', label="‖ω‖")
-            ax_trig.axvline(t[intervalo], color='r', label="t=0")
+            ax_trig.axvline(t[intervalos], color='r', label="t=0")
             ax_trig.axvline(0, color='r', label="t=0")
             ax_trig.set_xlabel("Tempo (s)")
             ax_trig.set_ylabel("Velocidade angular (rad/s)")
