@@ -191,7 +191,7 @@ with tab1:
                 chave = 0
                 seq = 0    
                 
-        st.text(intervalos)
+        intervalos = intervalos - 400
         # 6) Picos: V e ML
         indices_v, _  = find_peaks(v_gyro,  height=height_thresh, distance=distance_samples)
         indices_ml, _ = find_peaks(ml_gyro, height=height_thresh, distance=distance_samples)
