@@ -280,13 +280,13 @@ with tab1:
             df_tempos_v = pd.DataFrame(rows_v)
             st.dataframe(df_tempos_v, width='stretch')
 
-            st.subheader("Tempos por ciclo — Velocidade angular (AP)")
+            st.subheader("Tempos por ciclo — Velocidade angular (ML)")
             df_tempos_ml = pd.DataFrame(rows_ml)
             st.dataframe(df_tempos_ml, width='stretch')
-            df_join = df_tempos_v.merge(df_tempos_ml, on="ciclo", suffixes=("_V", "_AP"))
+            df_join = df_tempos_v.merge(df_tempos_ml, on="ciclo", suffixes=("_V", "_ML"))
 
             st.download_button(
-                "Baixar CSV (Acc)",
+                "Baixar CSV (Gyro)",
                 df_join.to_csv(index=False).encode("utf-8"),
                 file_name="tempo_ciclos_gyro.csv",
                 mime="text/csv",
