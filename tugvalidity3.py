@@ -177,7 +177,7 @@ with tab1:
         chave = 0
         seq = 0
         for index,valor in enumerate(media_movel):
-            if valor > threshold and chave == 0:
+            if valor > threshold and chave == 0 and seq == 0:
                 intervalos.append(index)
                 chave = 1
             elif valor < threshold and chave == 1 and seq < 2:
