@@ -196,7 +196,7 @@ with tab1:
         indices_v = []
         for i in range(0,len(intervalos)/2,2)
             # 6) Picos: V e ML
-            pos, _  = find_peaks(v_gyro[intervalos[i]:v_gyro[intervalos[i+1]],  height=height_thresh, distance=distance_samples)
+            pos, _  = find_peaks(v_gyro[intervalos[i]:[intervalos[i+1]],  height=height_thresh, distance=distance_samples)
             indices_v.append(pos)
             
         indices_ml, _ = find_peaks(ml_gyro, height=height_thresh, distance=distance_samples)
