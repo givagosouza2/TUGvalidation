@@ -172,7 +172,7 @@ with tab1:
         threshold = 0.3  # Limite para marcar no gráfico
 
         # Média móvel
-        media_movel = pd.Series(sinal).rolling(window=window, min_periods=1).mean()
+        media_movel = pd.Series(v_gyro).rolling(window=window, min_periods=1).mean()
 
         # Índices onde a média móvel ultrapassa o limite
         idx_acima = np.where(media_movel > threshold)[0]
