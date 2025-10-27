@@ -241,7 +241,7 @@ with tab1:
             with c1:
                 fig_v, ax_v = plt.subplots(figsize=(10, 6))
                 ax_v.plot(t, v_gyro, 'k-', label='Vertical (|ω_y|)')
-                ax_v.plot(t, media_movel, 'r-', label='Vertical (|ω_y|)')
+                #ax_v.plot(t, media_movel, 'r-', label='Vertical (|ω_y|)')
                 ax_v.plot([t[intervalos],t[intervalos]],[0.3,5], '-y')
                 ax_v.axvline(0, color='r', ls='--', label="t=0")
 
