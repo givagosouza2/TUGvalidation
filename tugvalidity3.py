@@ -168,7 +168,7 @@ with tab1:
 
         # Ignora o primeiro como artefato (mantém seu padrão anterior)
         indices_v = indices_v[1:] if len(indices_v) > 1 else indices_v
-        indices_ml = indices_ml[1:] if len(indices_ml) > 1 else indices_ap
+        indices_ml = indices_ml[1:] if len(indices_ml) > 1 else indices_ml
 
         # 7) Agrupa em ciclos (pares sucessivos A1/A2)
         def build_cycles(indices):
