@@ -166,6 +166,9 @@ with tab1:
         t = t_new - t_new[idx0]
         t_min, t_max = float(t[0]), float(t[-1])
 
+        serie = pd.Series(v_gyro)
+        media_movel = serie.rolling(window=5).mean()
+        
         # 6) Picos: V e ML
         indices_v, _  = find_peaks(v_gyro,  height=height_thresh, distance=distance_samples)
         indices_ml, _ = find_peaks(ml_gyro, height=height_thresh, distance=distance_samples)
@@ -189,6 +192,10 @@ with tab1:
         num_ciclos = min(len(cycles_v), len(cycles_ml))
         rows_v, rows_ml = [], []
 
+        
+
+        
+
         # =========================
         # Plotagem
         # =========================
@@ -210,6 +217,7 @@ with tab1:
             with c1:
                 fig_v, ax_v = plt.subplots(figsize=(10, 6))
                 ax_v.plot(t, v_gyro, 'k-', label='Vertical (|ω_y|)')
+                ax_v.plot(t, media_movel, 'r-', label='Vertical (|ω_y|)')
                 ax_v.axvline(0, color='r', ls='--', label="t=0")
 
                 for i in range(num_ciclos):
