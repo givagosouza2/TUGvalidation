@@ -199,6 +199,8 @@ with tab1:
             if i+1 < len(intervalos):  # evita erro de índice ímpar
                 ini = intervalos[i]
                 fim = intervalos[i+1]
+                st.text(ini)
+                st.text(fim)
         
                 pos_local, _ = find_peaks(
                     v_gyro[ini:fim],
