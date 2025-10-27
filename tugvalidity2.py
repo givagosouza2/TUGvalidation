@@ -291,9 +291,9 @@ with tab1:
             df_join = df_tempos_v.merge(df_tempos_ap, on="ciclo", suffixes=("_V", "_AP"))
 
             st.download_button(
-                "📦 Exportar acc do TUG",
+                "Baixar CSV (Acc)",
                 df_join.to_csv(index=False).encode("utf-8"),
-                file_name="acc_tug.csv",
+                file_name="tempo_ciclos_acc.csv",
                 mime="text/csv",
                 key="btn_export_merged"
             )
