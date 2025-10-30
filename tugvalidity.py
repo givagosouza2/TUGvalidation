@@ -76,10 +76,10 @@ with tab1:
 
         st.markdown("**Ajustes finos**")
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="kin_sel_cycle")
-        d_on = st.number_input("Δ Início do teste (s)", -2.0, 2.0, float(st.session_state["adj_onset"].get(sel_cycle, 0.0)), 0.01, key="kin_don")
-        d_off = st.number_input("Δ Final do teste (s)", -2.0, 2.0, float(st.session_state["adj_offset"].get(sel_cycle, 0.0)), 0.01, key="kin_doff")
-        d_st = st.number_input("Δ Pico em pé (s)", -2.0, 2.0, float(st.session_state["adj_stand"].get(sel_cycle, 0.0)), 0.01, key="kin_dst")
-        d_si = st.number_input("Δ Pico para sentar (s)", -2.0, 2.0, float(st.session_state["adj_sit"].get(sel_cycle, 0.0)), 0.01, key="kin_dsi")
+        d_on = st.number_input("Δ Início do teste (s)", -10.0, 10.0, float(st.session_state["adj_onset"].get(sel_cycle, 0.0)), 0.01, key="kin_don")
+        d_off = st.number_input("Δ Final do teste (s)", -10.0, 10.0, float(st.session_state["adj_offset"].get(sel_cycle, 0.0)), 0.01, key="kin_doff")
+        d_st = st.number_input("Δ Pico em pé (s)", -10.0, 10.0, float(st.session_state["adj_stand"].get(sel_cycle, 0.0)), 0.01, key="kin_dst")
+        d_si = st.number_input("Δ Pico para sentar (s)", -10.0, 10.0, float(st.session_state["adj_sit"].get(sel_cycle, 0.0)), 0.01, key="kin_dsi")
 
         st.session_state["adj_onset"][sel_cycle] = d_on
         st.session_state["adj_offset"][sel_cycle] = d_off
@@ -87,7 +87,7 @@ with tab1:
         st.session_state["adj_sit"][sel_cycle]   = d_si
 
         sel_peak = st.number_input("Pico (3 m) 0-index", 0, 9999, 0, 1, key="kin_sel_peak")
-        d_pk = st.number_input("Δ 3 m (s)", -2.0, 2.0, float(st.session_state["adj_peaks"].get(sel_peak, 0.0)), 0.01, key="kin_dpk")
+        d_pk = st.number_input("Δ 3 m (s)", -10.0, 10.0, float(st.session_state["adj_peaks"].get(sel_peak, 0.0)), 0.01, key="kin_dpk")
         st.session_state["adj_peaks"][sel_peak] = d_pk
 
         cr1, cr2 = st.columns(2)
