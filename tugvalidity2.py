@@ -74,14 +74,14 @@ with tab1:
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="acc_sel_cycle")
         d_on = st.number_input(
             "Δ Tempo de A1 (s)",
-            -10.0, 10.0,
+            -60.0, 60.0,
             float(st.session_state["adj_onset"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA1",
         )
         d_off = st.number_input(
             "Δ Tempo de A2 (s)",
-            -10.0, 10.0,
+            -60.0, 60.0,
             float(st.session_state["adj_offset"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA2",
