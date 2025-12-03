@@ -277,17 +277,18 @@ with tab1:
                 fig_v, ax_v = plt.subplots(figsize=(10, 6))
                 ax_v.plot(t, v_gyro, 'k-', label='Vertical (|ω_y|)')
                 #ax_v.plot(t, media_movel, 'r-', label='Vertical (|ω_y|)')
-                ax_v.plot([t[intervalos],t[intervalos]],[0.3,5], '-y')
                 ax_v.axvline(0, color='r', ls='--', label="t=0")
 
                 for i in range(num_ciclos):
-                    a1_idx, a2_idx = cycles_v[i]
+                    a1_idx, a2_idx, a3_idx = cycles_v[i]
                     a1_t = t[a1_idx]; a2_t = t[a2_idx]
-                    da1 = float(st.session_state["adj_onset"].get(i, 0.0))
-                    da2 = float(st.session_state["adj_offset"].get(i, 0.0))
+                    da1 = float(st.session_state["adj_onset1"].get(i, 0.0))
+                    da2 = float(st.session_state["adj_onset2"].get(i, 0.0))
+                    da3 = float(st.session_state["adj_onset3"].get(i, 0.0))
                     a1_t_adj = clamp(a1_t + da1, t_min, t_max)
                     a2_t_adj = clamp(a2_t + da2, t_min, t_max)
 
+                    ax_v.plot([t[intervalos],t[intervalos]],[0.3,5], '-y')
                     ax_v.plot(t[a1_idx], v_gyro[a1_idx], 'ro')
                     ax_v.plot(t[a2_idx], v_gyro[a2_idx], 'ro')
                     ax_v.axvline(a1_t_adj, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
