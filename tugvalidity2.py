@@ -89,14 +89,14 @@ with tab1:
         d2_on = st.number_input(
             "Δ Tempo de A1 ap (s)",
             -60.0, 60.0,
-            float(st.session_state["adj_onset"].get(sel_cycle, 0.0)),
+            float(st.session_state["adj_onset2"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA1ap",
         )
         d2_off = st.number_input(
             "Δ Tempo de A2 ap (s)",
             -60.0, 60.0,
-            float(st.session_state["adj_offset"].get(sel_cycle, 0.0)),
+            float(st.session_state["adj_offset2"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA2ap",
         )
