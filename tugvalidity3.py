@@ -29,7 +29,7 @@ st.info(
 )
 
 # Estados para ajustes finos (por ciclo 0,1,2,...)
-for key in ("adj_onset", "adj_offset"):
+for key in ("adj_onset1","adj_onset2","adj_onset3","adj_offset1"):
     if key not in st.session_state:
         st.session_state[key] = {}
 # Estado do índice do trigger (t=0) na malha reamostrada
@@ -70,22 +70,41 @@ with tab1:
 
         st.markdown("**Ajustes finos por ciclo (aplicados a V e ML)**")
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="gyro_sel_cycle")
-        d_on = st.number_input(
-            "Δ Tempo de A1 (s)",
+        d_on1 = st.number_input(
+            "Δ Onset (s)",
             -30.0, 30.0,
-            float(st.session_state["adj_onset"].get(sel_cycle, 0.0)),
+            float(st.session_state["adj_onset1"].get(sel_cycle, 0.0)),
             0.01,
-            key="gyro_dA1",
+            key="gyro_donset",
         )
-        d_off = st.number_input(
-            "Δ Tempo de A2 (s)",
+        
+        d_on2 = st.number_input(
+            "Δ Tempo de G0 (s)",
             -30.0, 30.0,
-            float(st.session_state["adj_offset"].get(sel_cycle, 0.0)),
+            float(st.session_state["adj_onset2"].get(sel_cycle, 0.0)),
             0.01,
-            key="gyro_dA2",
+            key="gyro_dG0",
         )
-        st.session_state["adj_onset"][sel_cycle] = d_on
-        st.session_state["adj_offset"][sel_cycle] = d_off
+
+        d_on3 = st.number_input(
+            "Δ Tempo de G3 (s)",
+            -30.0, 30.0,
+            float(st.session_state["adj_onset2"].get(sel_cycle, 0.0)),
+            0.01,
+            key="gyro_dG3",
+        )
+        
+        d_off1 = st.number_input(
+            "Δ Offset (s)",
+            -30.0, 30.0,
+            float(st.session_state["adj_offset1"].get(sel_cycle, 0.0)),
+            0.01,
+            key="gyro_doffset",
+        )
+        st.session_state["adj_onset1"][sel_cycle] = d_on1
+        st.session_state["adj_onset2"][sel_cycle] = d_on2
+        st.session_state["adj_onset3"][sel_cycle] = d_on3
+        st.session_state["adj_offset1"][sel_cycle] = d_off1
 
         rc1, rc2 = st.columns(2)
         if rc1.button("Reset ciclo", key="btn_reset_cycle_gyro"):
