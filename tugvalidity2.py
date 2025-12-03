@@ -73,29 +73,49 @@ with tab1:
         st.markdown("**Ajustes finos por ciclo (aplicados à V e AP)**")
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="acc_sel_cycle")
         d_on = st.number_input(
-            "Δ Tempo de A1 (s)",
+            "Δ Tempo de A1 v (s)",
             -60.0, 60.0,
             float(st.session_state["adj_onset"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA1",
         )
         d_off = st.number_input(
-            "Δ Tempo de A2 (s)",
+            "Δ Tempo de A2 v (s)",
             -60.0, 60.0,
             float(st.session_state["adj_offset"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA2",
         )
+        d2_on = st.number_input(
+            "Δ Tempo de A1 ap (s)",
+            -60.0, 60.0,
+            float(st.session_state["adj_onset"].get(sel_cycle, 0.0)),
+            0.01,
+            key="acc_dA1ap",
+        )
+        d2_off = st.number_input(
+            "Δ Tempo de A2 ap (s)",
+            -60.0, 60.0,
+            float(st.session_state["adj_offset"].get(sel_cycle, 0.0)),
+            0.01,
+            key="acc_dA2ap",
+        )
         st.session_state["adj_onset"][sel_cycle] = d_on
         st.session_state["adj_offset"][sel_cycle] = d_off
+        st.session_state["adj_onset2"][sel_cycle] = d2_on
+        st.session_state["adj_offset2"][sel_cycle] = d2_off
 
         cr1, cr2 = st.columns(2)
         if cr1.button("Reset ciclo", key="btn_reset_cycle_acc"):
             st.session_state["adj_onset"].pop(sel_cycle, None)
             st.session_state["adj_offset"].pop(sel_cycle, None)
+            st.session_state["adj_onset2"].pop(sel_cycle, None)
+            st.session_state["adj_offset2"].pop(sel_cycle, None)
         if cr2.button("Reset tudo", key="btn_reset_all_acc"):
             st.session_state["adj_onset"].clear()
             st.session_state["adj_offset"].clear()
+            st.session_state["adj_onset2"].clear()
+            st.session_state["adj_offset2"].clear()
 
     # ===== Processamento =====
     if uploaded_file_acc is not None:
@@ -254,8 +274,8 @@ with tab1:
                     a1_t = t[a1_idx]
                     a2_t = t[a2_idx]
                     # usa os mesmos ajustes por ciclo (Δ A1/A2)
-                    da1 = float(st.session_state["adj_onset"].get(i, 0.0))
-                    da2 = float(st.session_state["adj_offset"].get(i, 0.0))
+                    da1 = float(st.session_state["adj_onset2"].get(i, 0.0))
+                    da2 = float(st.session_state["adj_offset2"].get(i, 0.0))
                     a1_t_adj = clamp(a1_t + da1, t_min, t_max)
                     a2_t_adj = clamp(a2_t + da2, t_min, t_max)
 
