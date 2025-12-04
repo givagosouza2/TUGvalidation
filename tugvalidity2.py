@@ -64,7 +64,7 @@ with tab1:
         # Pré-processamento
         do_detrend = True
         do_filter = True
-        cutoff_acc = 2.5  # Hz
+        cutoff_acc = 2  # Hz
 
         # Parâmetros de detecção
         height_thresh = 2.0
