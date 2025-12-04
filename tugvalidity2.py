@@ -67,7 +67,7 @@ with tab1:
         cutoff_acc = 2  # Hz
 
         # Parâmetros de detecção
-        height_thresh = 2.0
+        height_thresh = 3
         distance_samples = 500  # em amostras do vetor reamostrado
 
         st.markdown("**Ajustes finos por ciclo (aplicados à V e AP)**")
