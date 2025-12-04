@@ -67,7 +67,8 @@ with tab1:
         cutoff_acc = 2  # Hz
 
         # Parâmetros de detecção
-        height_thresh = 3
+        height_thresh_ap = 3
+        height_thresh = 2
         distance_samples = 500  # em amostras do vetor reamostrado
 
         st.markdown("**Ajustes finos por ciclo (aplicados à V e AP)**")
@@ -189,7 +190,7 @@ with tab1:
 
         # 6) Picos: V e AP (máximos)
         indices_v, _ = find_peaks(v_acc, height=height_thresh, distance=distance_samples)
-        indices_ap, _ = find_peaks(ap_acc, height=height_thresh, distance=distance_samples)
+        indices_ap, _ = find_peaks(ap_acc, height=height_thresh_ap, distance=distance_samples)
 
         # Ignora o primeiro como artefato (mantém seu padrão anterior)
         indices_v = indices_v[1:] if len(indices_v) > 1 else indices_v
