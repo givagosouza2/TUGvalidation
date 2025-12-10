@@ -33,7 +33,7 @@ if "acc_trig" not in st.session_state:
     st.session_state["acc_trig"] = 0.0  # futuro: trigger em segundos, se usar vetor de tempo absoluto
 
 # Estados para ajustes finos (acelerômetro): por ciclo (0,1,2,...)
-for key in ("adj_onset", "adj_offset", "adj_onset2", "adj_offset2"):
+for key in ("A1v peak", "A2v peak", "A1ap peak", "A2ap peak"):
     if key not in st.session_state:
         st.session_state[key] = {}
 
@@ -64,7 +64,7 @@ with tab1:
         # Pré-processamento
         do_detrend = True
         do_filter = True
-        cutoff_acc = 2  # Hz
+        cutoff_acc = 6  # Hz
 
         # Parâmetros de detecção
         height_thresh_ap = 3
@@ -73,50 +73,50 @@ with tab1:
 
         st.markdown("**Ajustes finos por ciclo (aplicados à V e AP)**")
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="acc_sel_cycle")
-        d_on = st.number_input(
-            "Δ Tempo de A1 v (s)",
-            -60.0, 60.0,
-            float(st.session_state["adj_onset"].get(sel_cycle, 0.0)),
+        d_1 = st.number_input(
+            "peak A1 v (s)",
+            0, 100,
+            float(st.session_state["A1v peak"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA1",
         )
-        d_off = st.number_input(
-            "Δ Tempo de A2 v (s)",
-            -60.0, 60.0,
-            float(st.session_state["adj_offset"].get(sel_cycle, 0.0)),
+        d_2 = st.number_input(
+            "peak A2 v (s)",
+            0, 100.0,
+            float(st.session_state["A2v peak"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA2",
         )
-        d2_on = st.number_input(
-            "Δ Tempo de A1 ap (s)",
-            -60.0, 60.0,
-            float(st.session_state["adj_onset2"].get(sel_cycle, 0.0)),
+        d_3 = st.number_input(
+            "peak A1 ap (s)",
+            0, 100.0,
+            float(st.session_state["A1ap peak"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA1ap",
         )
-        d2_off = st.number_input(
-            "Δ Tempo de A2 ap (s)",
-            -60.0, 60.0,
+        d_4 = st.number_input(
+            "peak A2 ap (s)",
+            0, 100.0,
             float(st.session_state["adj_offset2"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA2ap",
         )
-        st.session_state["adj_onset"][sel_cycle] = d_on
-        st.session_state["adj_offset"][sel_cycle] = d_off
-        st.session_state["adj_onset2"][sel_cycle] = d2_on
-        st.session_state["adj_offset2"][sel_cycle] = d2_off
+        st.session_state["A1v peak"][sel_cycle] = d_1
+        st.session_state["A2v peak"][sel_cycle] = d_2
+        st.session_state["A1ap peak"][sel_cycle] = d_3
+        st.session_state["A2ap peak"][sel_cycle] = d_4
 
         cr1, cr2 = st.columns(2)
         if cr1.button("Reset ciclo", key="btn_reset_cycle_acc"):
-            st.session_state["adj_onset"].pop(sel_cycle, None)
-            st.session_state["adj_offset"].pop(sel_cycle, None)
-            st.session_state["adj_onset2"].pop(sel_cycle, None)
-            st.session_state["adj_offset2"].pop(sel_cycle, None)
+            st.session_state["A1v peak"].pop(sel_cycle, None)
+            st.session_state["A2v peak"].pop(sel_cycle, None)
+            st.session_state["A1ap peak"].pop(sel_cycle, None)
+            st.session_state["A2ap peak"].pop(sel_cycle, None)
         if cr2.button("Reset tudo", key="btn_reset_all_acc"):
-            st.session_state["adj_onset"].clear()
-            st.session_state["adj_offset"].clear()
-            st.session_state["adj_onset2"].clear()
-            st.session_state["adj_offset2"].clear()
+            st.session_state["A1v peak"].clear()
+            st.session_state["A2v peak"].clear()
+            st.session_state["A1ap peak"].clear()
+            st.session_state["A1ap peak"].clear()
 
     # ===== Processamento =====
     if uploaded_file_acc is not None:
@@ -238,8 +238,8 @@ with tab1:
                     a1_t = t[a1_idx]
                     a2_t = t[a2_idx]
                     # ajustes por ciclo
-                    da1 = float(st.session_state["adj_onset"].get(i, 0.0))
-                    da2 = float(st.session_state["adj_offset"].get(i, 0.0))
+                    da1 = float(st.session_state["A1v peak"].get(i, 0.0))
+                    da2 = float(st.session_state["A2v peak"].get(i, 0.0))
                     a1_t_adj = clamp(a1_t + da1, t_min, t_max)
                     a2_t_adj = clamp(a2_t + da2, t_min, t_max)
 
