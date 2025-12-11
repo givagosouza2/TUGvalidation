@@ -56,8 +56,8 @@ with tab1:
             "Índice de referência (t=0)",
             min_value=0.0,
             max_value=1000.0,
-            value=0,
-            step=1,
+            value=0.0,
+            step=1.0,
             key="acc_trig_idx",
         )
 
