@@ -259,11 +259,11 @@ with tab1:
                         "G0_amp(V)": float(G0peak),
                         "G3_t(s)": da2,
                         "G3_amp(V)": float(float(G3peak)),
-                        "Offset (s)": da5
+                        "Offset (s)": da5,
                     })
 
                 ax_v.set_xlabel("Tempo (s)")
-                ax_v.set_ylabel("Aceleração (Vertical)")
+                ax_v.set_ylabel("Velocidade angular (ML)")
                 ax_v.legend(loc="lower left")
                 st.pyplot(fig_v)
 
@@ -305,24 +305,24 @@ with tab1:
                     })
 
                 ax_ap.set_xlabel("Tempo (s)")
-                ax_ap.set_ylabel("Aceleração (AP)")
+                ax_ap.set_ylabel("Velocidade angular (V)")
                 ax_ap.legend(loc="lower left")
                 st.pyplot(fig_ap)
 
             # ===== Tabelas =====
-            st.subheader("Tempos por ciclo — Aceleração Vertical (V)")
+            st.subheader("Tempos por ciclo — Giroscópio (ML)")
             df_tempos_v = pd.DataFrame(rows_v)
             st.dataframe(df_tempos_v, width='stretch')
 
-            st.subheader("Tempos por ciclo — Aceleração Antero-Posterior (AP)")
+            st.subheader("Tempos por ciclo — Giroscópio (V)")
             df_tempos_ap = pd.DataFrame(rows_ap)
             st.dataframe(df_tempos_ap, width='stretch')
             df_join = df_tempos_v.merge(df_tempos_ap, on="ciclo", suffixes=("_V", "_AP"))
 
             st.download_button(
-                "Baixar CSV (Acc)",
+                "Baixar CSV (Gyro)",
                 df_join.to_csv(index=False).encode("utf-8"),
-                file_name="tempo_ciclos_acc.csv",
+                file_name="tempo_ciclos_gyro.csv",
                 mime="text/csv",
                 key="btn_export_merged"
             )
