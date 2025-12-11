@@ -224,6 +224,7 @@ with tab1:
                     ax_v.axvline(da2, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
 
                     # tabela V
+                    rows_v = []
                     rows_v.append({
                         "ciclo": i,
                         "G0_t(s)": da1,
