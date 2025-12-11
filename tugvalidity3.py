@@ -255,7 +255,7 @@ with tab1:
 
                     for index, valor in enumerate(ap_gyro):
                         if t[index] > da4:
-                            G1peak = ap_gyro[index-1]
+                            G2peak = ap_gyro[index-1]
                             break
 
                     # pontos originais
