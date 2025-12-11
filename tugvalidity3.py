@@ -37,16 +37,16 @@ for key in ("G0 peak", "G2 peak", "G1 peak", "G3 peak"):
     if key not in st.session_state:
         st.session_state[key] = {}
 
-tab1, = st.tabs(["Acceleration"])
+tab1, = st.tabs(["Gyroscope"])
 with tab1:
     # Layout: coluna de controles + coluna de visualização (com subcolunas)
     c_ctrl, c_plot1 = st.columns([0.7, 2])
 
     with c_ctrl:
-        st.subheader("Controles — Aceleração")
+        st.subheader("Controles — Giroscópio")
 
         uploaded_file_acc = st.file_uploader(
-            "Arquivo (.txt: tempo(ms); ax; ay; az) — separador ';'",
+            "Arquivo (.txt: tempo(ms); gx; gy; gz) — separador ';'",
             type=["txt"],
             key="acc_file",
         )
