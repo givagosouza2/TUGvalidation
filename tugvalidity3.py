@@ -33,7 +33,7 @@ if "acc_trig" not in st.session_state:
     st.session_state["acc_trig"] = 0.0  # futuro: trigger em segundos, se usar vetor de tempo absoluto
 
 # Estados para ajustes finos (acelerômetro): por ciclo (0,1,2,...)
-for key in ("G0 peak", "G4 peak", "G1 peak", "G3 peak"):
+for key in ("G0 peak", "G2 peak", "G1 peak", "G3 peak"):
     if key not in st.session_state:
         st.session_state[key] = {}
 
