@@ -208,12 +208,12 @@ with tab1:
 
                     for index, valor in enumerate(ml_gyro):
                         if t[index] > da1:
-                            G0peak = ml_acc[index-1]
+                            G0peak = ml_gyro[index-1]
                             break
 
                     for index, valor in enumerate(ml_gyro):
                         if t[index] > da2:
-                            G3peak = ml_acc[index-1]
+                            G3peak = ml_gyro[index-1]
                             break
 
                     # pontos originais
