@@ -209,7 +209,7 @@ with tab1:
             fig_trig, ax_trig = plt.subplots(figsize=(10, 2))
             nwin = min(2000, len(t))
             ax_trig.plot(t[:nwin], v_gyro[:nwin], 'k-', label="V (|ax| ou |ay|)")
-            ax_trig.axvline(0, color='r', label="t=0")
+            ax_trig.axvline(trigger_idx_shift, color='r', label="t=0")
             ax_trig.set_xlabel("Tempo (s)")
             ax_trig.set_ylabel("Velocidade angular V")
             ax_trig.legend(loc="lower left")
