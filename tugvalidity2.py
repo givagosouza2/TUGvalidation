@@ -249,7 +249,7 @@ with tab1:
 
                     # pontos originais
                     ax_v.plot(da1, A1vpeak, 'ro')
-                    ax_v.plot(da2, A1vpeak, 'ro')
+                    ax_v.plot(da2, A2vpeak, 'ro')
                     # linhas ajustadas
                     ax_v.axvline(da1, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
                     ax_v.axvline(da2, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
