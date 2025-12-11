@@ -200,7 +200,7 @@ with tab1:
                 fig_v, ax_v = plt.subplots(figsize=(10, 6))
                 ax_v.plot(t, ml_gyro, 'k-', label='Vertical')
                 ax_v.axvline(0, color='r', ls='--', label="t=0")
-                num_ciclos = 4
+                num_ciclos = [0,1,2,3]
 
                 for i in range(num_ciclos):
                     da1 = float(st.session_state["G0 peak"].get(i, 0.0))
