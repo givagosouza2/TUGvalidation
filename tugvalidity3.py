@@ -254,10 +254,12 @@ with tab1:
                     
                     rows_v.append({
                         "ciclo": i,
+                        "Onset (s)": da0,
                         "G0_t(s)": da1,
                         "G0_amp(V)": float(G0peak),
                         "G3_t(s)": da2,
                         "G3_amp(V)": float(float(G3peak)),
+                        "Offset (s)": da5
                     })
 
                 ax_v.set_xlabel("Tempo (s)")
