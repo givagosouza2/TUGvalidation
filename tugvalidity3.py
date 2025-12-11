@@ -33,7 +33,7 @@ if "acc_trig" not in st.session_state:
     st.session_state["acc_trig"] = 0.0  # futuro: trigger em segundos, se usar vetor de tempo absoluto
 
 # Estados para ajustes finos (acelerômetro): por ciclo (0,1,2,...)
-for key in ("G0 peak", "G2 peak", "G1 peak", "G3 peak"):
+for key in ("Onset","G0 peak", "G2 peak", "G1 peak", "G3 peak","Offset"):
     if key not in st.session_state:
         st.session_state[key] = {}
 
@@ -73,6 +73,14 @@ with tab1:
 
         st.markdown("**Ajustes finos por ciclo (aplicados à V e AP)**")
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="acc_sel_cycle")
+        d_0 = st.number_input(
+            "Onset (s)",
+            0.0, 100.0,
+            float(st.session_state["Onset"].get(sel_cycle, 0.0)),
+            0.01,
+            key="acc_donset",
+        )
+        
         d_1 = st.number_input(
             "peak G0 (s)",
             0.0, 100.0,
@@ -101,22 +109,36 @@ with tab1:
             0.01,
             key="acc_dA2ap",
         )
+
+        d_5 = st.number_input(
+            "Offset (s)",
+            0.0, 100.0,
+            float(st.session_state["Offset"].get(sel_cycle, 0.0)),
+            0.01,
+            key="acc_dOffset",
+        )
+        st.session_state["Onset"][sel_cycle] = d_0
         st.session_state["G0 peak"][sel_cycle] = d_1
         st.session_state["G1 peak"][sel_cycle] = d_2
         st.session_state["G2 peak"][sel_cycle] = d_3
         st.session_state["G3 peak"][sel_cycle] = d_4
+        st.session_state["Offset"][sel_cycle] = d_5
 
         cr1, cr2 = st.columns(2)
         if cr1.button("Reset ciclo", key="btn_reset_cycle_acc"):
+            st.session_state["Onset"].pop(sel_cycle, None)
             st.session_state["G0 peak"].pop(sel_cycle, None)
             st.session_state["G1 peak"].pop(sel_cycle, None)
             st.session_state["G2 peak"].pop(sel_cycle, None)
             st.session_state["G3 peak"].pop(sel_cycle, None)
+            st.session_state["Offset"].pop(sel_cycle, None)
         if cr2.button("Reset tudo", key="btn_reset_all_acc"):
+            st.session_state["Onset"].clear()
             st.session_state["G0 peak"].clear()
             st.session_state["G1 peak"].clear()
             st.session_state["G2 peak"].clear()
             st.session_state["G3 peak"].clear()
+            st.session_state["Offset"].clear()
 
     # ===== Processamento =====
     if uploaded_file_acc is not None:
@@ -204,8 +226,10 @@ with tab1:
                 num_ciclos = 4
 
                 for i in range(num_ciclos):
+                    da0 = float(st.session_state["Onset"].get(i, 0.0))
                     da1 = float(st.session_state["G0 peak"].get(i, 0.0))
                     da2 = float(st.session_state["G3 peak"].get(i, 0.0))
+                    da5 = float(st.session_state["Offset"].get(i, 0.0))
 
                     for index, valor in enumerate(ml_gyro):
                         if t[index] > da1:
