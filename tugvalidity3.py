@@ -266,6 +266,7 @@ with tab1:
                     ax_ap.axvline(da4, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
 
                     # tabela AP
+                    rows_ap = []
                     rows_ap.append({
                         "ciclo": i,
                         "G1_t(s)": da3,
