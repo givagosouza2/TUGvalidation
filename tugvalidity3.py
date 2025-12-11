@@ -177,7 +177,7 @@ with tab1:
 
         t_start, t_end = float(tempo_s[0]), float(tempo_s[-1])
         t_new = np.arange(t_start, t_end, 1.0/new_fs)
-        t = t_new
+        t = t_new - trigger_idx_shift
 
         fx = interp1d(tempo_s, gyro_x_raw, kind="linear", bounds_error=False, fill_value="extrapolate")
         fy = interp1d(tempo_s, gyro_y_raw, kind="linear", bounds_error=False, fill_value="extrapolate")
@@ -209,7 +209,7 @@ with tab1:
             fig_trig, ax_trig = plt.subplots(figsize=(10, 2))
             nwin = min(2000, len(t))
             ax_trig.plot(t[:nwin], v_gyro[:nwin], 'k-', label="V (|ax| ou |ay|)")
-            ax_trig.axvline(trigger_idx_shift, color='r', label="t=0")
+            ax_trig.axvline(0, color='r', label="t=0")
             ax_trig.set_xlabel("Tempo (s)")
             ax_trig.set_ylabel("Velocidade angular V")
             ax_trig.legend(loc="lower left")
