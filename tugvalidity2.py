@@ -234,29 +234,33 @@ with tab1:
                 ax_v.axvline(0, color='r', ls='--', label="t=0")
 
                 for i in range(num_ciclos):
-                    a1_idx, a2_idx = cycles_v[i]
-                    a1_t = t[a1_idx]
-                    a2_t = t[a2_idx]
-                    # ajustes por ciclo
                     da1 = float(st.session_state["A1v peak"].get(i, 0.0))
                     da2 = float(st.session_state["A2v peak"].get(i, 0.0))
-                    a1_t_adj = clamp(a1_t + da1, t_min, t_max)
-                    a2_t_adj = clamp(a2_t + da2, t_min, t_max)
+
+                    for index, valor in enumerate(v_acc):
+                        if t[index] > da1:
+                            A1vpeak = v_acc[index-1]
+                            break
+
+                    for index, valor in enumerate(v_acc):
+                        if t[index] > da2:
+                            A2vpeak = v_acc[index-1]
+                            break
 
                     # pontos originais
-                    ax_v.plot(t[a1_idx], v_acc[a1_idx], 'ro')
-                    ax_v.plot(t[a2_idx], v_acc[a2_idx], 'ro')
+                    ax_v.plot(da1, A1vpeak, 'ro')
+                    ax_v.plot(da2, A1vpeak, 'ro')
                     # linhas ajustadas
-                    ax_v.axvline(a1_t_adj, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
-                    ax_v.axvline(a2_t_adj, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
+                    ax_v.axvline(da1, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
+                    ax_v.axvline(da2, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
 
                     # tabela V
                     rows_v.append({
                         "ciclo": i,
-                        "A1_t(s)": a1_t_adj,
-                        "A1_amp(V)": float(v_acc[a1_idx]),
-                        "A2_t(s)": a2_t_adj,
-                        "A2_amp(V)": float(v_acc[a2_idx]),
+                        "A1_t(s)": da1,
+                        "A1_amp(V)": float(A1vpeak),
+                        "A2_t(s)": da2,
+                        "A2_amp(V)": float(float(A2vpeak)),
                     })
 
                 ax_v.set_xlabel("Tempo (s)")
@@ -271,29 +275,33 @@ with tab1:
                 ax_ap.axvline(0, color='r', ls='--', label="t=0")
 
                 for i in range(num_ciclos):
-                    a1_idx, a2_idx = cycles_ap[i]
-                    a1_t = t[a1_idx]
-                    a2_t = t[a2_idx]
-                    # usa os mesmos ajustes por ciclo (Δ A1/A2)
-                    da1 = float(st.session_state["adj_onset2"].get(i, 0.0))
-                    da2 = float(st.session_state["adj_offset2"].get(i, 0.0))
-                    a1_t_adj = clamp(a1_t + da1, t_min, t_max)
-                    a2_t_adj = clamp(a2_t + da2, t_min, t_max)
+                    da3 = float(st.session_state["A1ap peak"].get(i, 0.0))
+                    da4 = float(st.session_state["A2ap peak"].get(i, 0.0))
+
+                    for index, valor in enumerate(ap_acc):
+                        if t[index] > da3:
+                            A1appeak = ap_acc[index-1]
+                            break
+
+                    for index, valor in enumerate(ap_acc):
+                        if t[index] > da4:
+                            A2appeak = ap_acc[index-1]
+                            break
 
                     # pontos originais
-                    ax_ap.plot(t[a1_idx], ap_acc[a1_idx], 'ro')
-                    ax_ap.plot(t[a2_idx], ap_acc[a2_idx], 'ro')
+                    ax_ap.plot(da3, A1appeak, 'ro')
+                    ax_ap.plot(da4, A2appeak, 'ro')
                     # linhas ajustadas
-                    ax_ap.axvline(a1_t_adj, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
-                    ax_ap.axvline(a2_t_adj, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
+                    ax_ap.axvline(da3, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
+                    ax_ap.axvline(da4, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
 
                     # tabela AP
                     rows_ap.append({
                         "ciclo": i,
-                        "A1_t(s)": a1_t_adj,
-                        "A1_amp(AP)": float(ap_acc[a1_idx]),
-                        "A2_t(s)": a2_t_adj,
-                        "A2_amp(AP)": float(ap_acc[a2_idx]),
+                        "A1_t(s)": da3,
+                        "A1_amp(AP)": float(A1appeak),
+                        "A2_t(s)": da4,
+                        "A2_amp(AP)": float(A2appeak),
                     })
 
                 ax_ap.set_xlabel("Tempo (s)")
