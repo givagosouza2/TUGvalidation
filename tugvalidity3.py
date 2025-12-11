@@ -194,7 +194,8 @@ with tab1:
             st.pyplot(fig_trig)
 
             c1, c2 = st.columns(2)
-
+            rows_v = []
+            rows_ap = []            
             # ---- Coluna 1: Vertical ----
             with c1:
                 fig_v, ax_v = plt.subplots(figsize=(10, 6))
@@ -224,7 +225,7 @@ with tab1:
                     ax_v.axvline(da2, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
 
                     # tabela V
-                    rows_v = []
+                    
                     rows_v.append({
                         "ciclo": i,
                         "G0_t(s)": da1,
@@ -266,7 +267,7 @@ with tab1:
                     ax_ap.axvline(da4, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
 
                     # tabela AP
-                    rows_ap = []
+                   
                     rows_ap.append({
                         "ciclo": i,
                         "G1_t(s)": da3,
