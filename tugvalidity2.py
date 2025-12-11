@@ -75,28 +75,28 @@ with tab1:
         sel_cycle = st.number_input("Ciclo (0-index)", 0, 9999, 0, 1, key="acc_sel_cycle")
         d_1 = st.number_input(
             "peak A1 v (s)",
-            0, 100,
+            0.0, 100.0,
             float(st.session_state["A1v peak"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA1",
         )
         d_2 = st.number_input(
             "peak A2 v (s)",
-            0, 100.0,
+            0.0, 100.0,
             float(st.session_state["A2v peak"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA2",
         )
         d_3 = st.number_input(
             "peak A1 ap (s)",
-            0, 100.0,
+            0.0, 100.0,
             float(st.session_state["A1ap peak"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA1ap",
         )
         d_4 = st.number_input(
             "peak A2 ap (s)",
-            0, 100.0,
+            0.0, 100.0,
             float(st.session_state["A2ap peak"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA2ap",
