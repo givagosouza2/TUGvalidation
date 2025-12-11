@@ -97,7 +97,7 @@ with tab1:
         d_4 = st.number_input(
             "peak A2 ap (s)",
             0, 100.0,
-            float(st.session_state["adj_offset2"].get(sel_cycle, 0.0)),
+            float(st.session_state["A2ap peak"].get(sel_cycle, 0.0)),
             0.01,
             key="acc_dA2ap",
         )
