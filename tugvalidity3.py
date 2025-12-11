@@ -206,12 +206,12 @@ with tab1:
                     da1 = float(st.session_state["G0 peak"].get(i, 0.0))
                     da2 = float(st.session_state["G3 peak"].get(i, 0.0))
 
-                    for index, valor in enumerate(ml_acc):
+                    for index, valor in enumerate(ml_gyro):
                         if t[index] > da1:
                             G0peak = ml_acc[index-1]
                             break
 
-                    for index, valor in enumerate(ml_acc):
+                    for index, valor in enumerate(ml_gyro):
                         if t[index] > da2:
                             G3peak = ml_acc[index-1]
                             break
