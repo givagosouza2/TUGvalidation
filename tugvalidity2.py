@@ -267,6 +267,7 @@ with tab1:
                 ax_v.set_ylabel("Aceleração (Vertical)")
                 ax_v.legend(loc="lower left")
                 ax_v.grid(True,which="both",linestyle="--",linewidth=0.5,alpha=0.6)
+                ax_v.minorticks_on()
                 st.pyplot(fig_v)
 
             # ---- Coluna 2: AP ----
@@ -309,6 +310,7 @@ with tab1:
                 ax_ap.set_ylabel("Aceleração (AP)")
                 ax_ap.legend(loc="lower left")
                 ax_ap.grid(True,which="both",linestyle="--",linewidth=0.5,alpha=0.6)
+                ax_ap.minorticks_on()
                 st.pyplot(fig_ap)
 
             # ===== Tabelas =====
