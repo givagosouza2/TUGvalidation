@@ -202,6 +202,8 @@ with tab1:
         ml_gyro = np.abs(gyro_x)
         ap_gyro = np.abs(gyro_z)
 
+        norm = np.sqrt(v_gyro**2+ml_gyro**2+ap_gyro**2)
+
         # Plotagem
         with c_plot1:
             # Trigger plot (janela inicial)
@@ -233,12 +235,12 @@ with tab1:
 
                     for index, valor in enumerate(ml_gyro):
                         if t[index] > da1:
-                            G0peak = ml_gyro[index-1]
+                            G0peak = norm[index-1]
                             break
 
                     for index, valor in enumerate(ml_gyro):
                         if t[index] > da2:
-                            G3peak = ml_gyro[index-1]
+                            G3peak = norm[index-1]
                             break
 
                     # pontos originais
@@ -270,7 +272,7 @@ with tab1:
             # ---- Coluna 2: AP ----
             with c2:
                 fig_ap, ax_ap = plt.subplots(figsize=(10, 6))
-                ax_ap.plot(t, ap_gyro, 'k-', label='AP')
+                ax_ap.plot(t, norm, 'k-', label='AP')
                 ax_ap.axvline(0, color='r', ls='--', label="t=0")
 
                 for i in range(num_ciclos):
