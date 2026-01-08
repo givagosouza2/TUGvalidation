@@ -184,6 +184,8 @@ with tab1:
             ml_acc = np.abs(acc_x)
             ap_acc = np.abs(acc_z)
 
+        norm = np.sqrt(v_acc**2+ml_acc**2+ap_acc**2)
+
         # 5) Trigger por índice (alinha t=0)
         idx0 = int(clamp(trigger_idx_shift, 0, len(t_new) - 1))
         t = t_new - t_new[idx0]
@@ -230,7 +232,7 @@ with tab1:
             # ---- Coluna 1: Vertical ----
             with c1:
                 fig_v, ax_v = plt.subplots(figsize=(10, 6))
-                ax_v.plot(t, v_acc, 'k-', label='Vertical')
+                ax_v.plot(t, norm, 'k-', label='norm')
                 ax_v.axvline(0, color='r', ls='--', label="t=0")
 
                 for i in range(num_ciclos):
