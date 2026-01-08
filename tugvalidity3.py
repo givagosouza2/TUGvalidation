@@ -223,7 +223,7 @@ with tab1:
             # ---- Coluna 1: Vertical ----
             with c1:
                 fig_v, ax_v = plt.subplots(figsize=(10, 6))
-                ax_v.plot(t, ml_gyro, 'k-', label='Vertical')
+                ax_v.plot(t, norm, 'k-', label='Vertical')
                 ax_v.axvline(0, color='r', ls='--', label="t=0")
                 num_ciclos = 4
 
@@ -233,12 +233,12 @@ with tab1:
                     da2 = float(st.session_state["G3 peak"].get(i, 0.0))
                     da5 = float(st.session_state["Offset"].get(i, 0.0))
 
-                    for index, valor in enumerate(ml_gyro):
+                    for index, valor in enumerate(norm):
                         if t[index] > da1:
                             G0peak = norm[index-1]
                             break
 
-                    for index, valor in enumerate(ml_gyro):
+                    for index, valor in enumerate(norm):
                         if t[index] > da2:
                             G3peak = norm[index-1]
                             break
