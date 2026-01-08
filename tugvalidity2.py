@@ -239,14 +239,14 @@ with tab1:
                     da1 = float(st.session_state["A1v peak"].get(i, 0.0))
                     da2 = float(st.session_state["A2v peak"].get(i, 0.0))
 
-                    for index, valor in enumerate(v_acc):
+                    for index, valor in enumerate(norm):
                         if t[index] > da1:
-                            A1vpeak = v_acc[index-1]
+                            A1vpeak = norm[index-1]
                             break
 
-                    for index, valor in enumerate(v_acc):
+                    for index, valor in enumerate(norm):
                         if t[index] > da2:
-                            A2vpeak = v_acc[index-1]
+                            A2vpeak = norm[index-1]
                             break
 
                     # pontos originais
