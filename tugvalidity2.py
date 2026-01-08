@@ -191,7 +191,7 @@ with tab1:
         t = t_new - t_new[idx0]
 
         # 6) Picos: V e AP (máximos)
-        indices_v, _ = find_peaks(v_acc, height=height_thresh, distance=distance_samples)
+        indices_v, _ = find_peaks(norm, height=height_thresh, distance=distance_samples)
         indices_ap, _ = find_peaks(ap_acc, height=height_thresh_ap, distance=distance_samples)
 
         # Ignora o primeiro como artefato (mantém seu padrão anterior)
