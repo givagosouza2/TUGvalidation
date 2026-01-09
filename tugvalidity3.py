@@ -102,7 +102,7 @@ with tab1:
             0.01,
             key="acc_dA1ap",
         )
-        d_4 = st.number_input(
+        #d_4 = st.number_input(
             "peak G3 (s)",
             0.0, 100.0,
             float(st.session_state["G3 peak"].get(sel_cycle, 0.0)),
@@ -271,7 +271,7 @@ with tab1:
                     ax_v.plot(da1, G0peak, 'ro')
                     ax_v.plot(da3, G1peak, 'ro')
                     ax_v.plot(da4, G2peak, 'ro')
-                    ax_v.plot(da2, G3peak, 'ro')
+                    #ax_v.plot(da2, G3peak, 'ro')
                     ax_v.plot(da5, G0offset, 'ro')
                     # linhas ajustadas
                     ax_v.axvline(da0, color='blue', ls='--', label='A0 (aj)' if i == 0 else "")
