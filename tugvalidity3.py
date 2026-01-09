@@ -232,72 +232,71 @@ with tab1:
                     da1 = float(st.session_state["G0 peak"].get(i, 0.0))
                     da2 = float(st.session_state["G3 peak"].get(i, 0.0))
                     da5 = float(st.session_state["Offset"].get(i, 0.0))
-                for i in range(num_ciclos):
                     da3 = float(st.session_state["G1 peak"].get(i, 0.0))
                     da4 = float(st.session_state["G2 peak"].get(i, 0.0))
 
-                for index, valor in enumerate(norm):
-                    if t[index] > da0:
-                        G0onset = norm[index-1]
-                        break
-
-                for index, valor in enumerate(norm):
-                    if t[index] > da1:
-                        G0peak = norm[index-1]
-                        break
-                        
-                for index, valor in enumerate(norm):
-                    if t[index] > da3:
-                        G1peak = norm[index-1]
-                        break
-
-                for index, valor in enumerate(norm):
-                    if t[index] > da4:
-                        G2peak = norm[index-1]
-                        break
-
-                for index, valor in enumerate(norm):
-                    if t[index] > da2:
-                        G3peak = norm[index-1]
-                        break
-
-                for index, valor in enumerate(norm):
-                    if t[index] > da5:
-                        G0offset = norm[index-1]
-                        break
-                        
-
-                # pontos originais
-                ax_v.plot(da0, G0onset, 'ro')
-                ax_v.plot(da1, G0peak, 'ro')
-                ax_v.plot(da3, G1peak, 'ro')
-                ax_v.plot(da4, G2peak, 'ro')
-                ax_v.plot(da2, G3peak, 'ro')
-                ax_v.plot(da5, G0offset, 'ro')
-                # linhas ajustadas
-                ax_v.axvline(da0, color='blue', ls='--', label='A0 (aj)' if i == 0 else "")
-                ax_v.axvline(da1, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
-                ax_v.axvline(da2, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
-                ax_v.axvline(da3, color='red', ls='--', label='A1 (aj)' if i == 0 else "")
-                ax_v.axvline(da4, color='black', ls='--', label='A1 (aj)' if i == 0 else "")
-                ax_v.axvline(da5, color='blue', ls='--', label='A1 (aj)' if i == 0 else "")
-
-                # tabela V
-                
-                rows_v.append({
-                    "ciclo": i,
-                    "Onset (s)": da0,
-                    "G0_t(s)": da1,
-                    "G0_amp(V)": float(G0peak),
-                    "G1_t(s)": da3,
-                    "G1_amp(AP)": float(G1peak),
-                    "G2_t(s)": da4,
-                    "G2_amp(AP)": float(G2peak),
-                    "G3_t(s)": da2,
-                    "G3_amp(V)": float(float(G3peak)),
-                    "Offset (s)": da5,
-                })
-
+                    for index, valor in enumerate(norm):
+                        if t[index] > da0:
+                            G0onset = norm[index-1]
+                            break
+    
+                    for index, valor in enumerate(norm):
+                        if t[index] > da1:
+                            G0peak = norm[index-1]
+                            break
+                            
+                    for index, valor in enumerate(norm):
+                        if t[index] > da3:
+                            G1peak = norm[index-1]
+                            break
+    
+                    for index, valor in enumerate(norm):
+                        if t[index] > da4:
+                            G2peak = norm[index-1]
+                            break
+    
+                    for index, valor in enumerate(norm):
+                        if t[index] > da2:
+                            G3peak = norm[index-1]
+                            break
+    
+                    for index, valor in enumerate(norm):
+                        if t[index] > da5:
+                            G0offset = norm[index-1]
+                            break
+                            
+    
+                    # pontos originais
+                    ax_v.plot(da0, G0onset, 'ro')
+                    ax_v.plot(da1, G0peak, 'ro')
+                    ax_v.plot(da3, G1peak, 'ro')
+                    ax_v.plot(da4, G2peak, 'ro')
+                    ax_v.plot(da2, G3peak, 'ro')
+                    ax_v.plot(da5, G0offset, 'ro')
+                    # linhas ajustadas
+                    ax_v.axvline(da0, color='blue', ls='--', label='A0 (aj)' if i == 0 else "")
+                    ax_v.axvline(da1, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
+                    ax_v.axvline(da2, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
+                    ax_v.axvline(da3, color='red', ls='--', label='A1 (aj)' if i == 0 else "")
+                    ax_v.axvline(da4, color='black', ls='--', label='A1 (aj)' if i == 0 else "")
+                    ax_v.axvline(da5, color='blue', ls='--', label='A1 (aj)' if i == 0 else "")
+    
+                    # tabela V
+                    
+                    rows_v.append({
+                        "ciclo": i,
+                        "Onset (s)": da0,
+                        "G0_t(s)": da1,
+                        "G0_amp(V)": float(G0peak),
+                        "G1_t(s)": da3,
+                        "G1_amp(AP)": float(G1peak),
+                        "G2_t(s)": da4,
+                        "G2_amp(AP)": float(G2peak),
+                        "G3_t(s)": da2,
+                        "G3_amp(V)": float(float(G3peak)),
+                        "Offset (s)": da5,
+                    })
+    
                 ax_v.set_xlabel("Tempo (s)")
                 ax_v.set_ylabel("Velocidade angular (ML)")
                 ax_v.legend(loc="lower left")
