@@ -268,8 +268,12 @@ with tab1:
                         
 
                 # pontos originais
+                ax_v.plot(da0, G0onset, 'ro')
                 ax_v.plot(da1, G0peak, 'ro')
+                ax_v.plot(da3, G1peak, 'ro')
+                ax_v.plot(da4, G2peak, 'ro')
                 ax_v.plot(da2, G3peak, 'ro')
+                ax_v.plot(da5, G0offset, 'ro')
                 # linhas ajustadas
                 ax_v.axvline(da0, color='blue', ls='--', label='A0 (aj)' if i == 0 else "")
                 ax_v.axvline(da1, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
