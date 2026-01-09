@@ -237,6 +237,11 @@ with tab1:
                     da4 = float(st.session_state["G2 peak"].get(i, 0.0))
 
                 for index, valor in enumerate(norm):
+                    if t[index] > da0:
+                        G0onset = norm[index-1]
+                        break
+
+                for index, valor in enumerate(norm):
                     if t[index] > da1:
                         G0peak = norm[index-1]
                         break
@@ -256,11 +261,17 @@ with tab1:
                         G3peak = norm[index-1]
                         break
 
+                for index, valor in enumerate(norm):
+                    if t[index] > da5:
+                        G0offset = norm[index-1]
+                        break
+                        
+
                 # pontos originais
                 ax_v.plot(da1, G0peak, 'ro')
                 ax_v.plot(da2, G3peak, 'ro')
                 # linhas ajustadas
-                ax_v.axvline(da0, color='blue', ls='--', label='A1 (aj)' if i == 0 else "")
+                ax_v.axvline(da0, color='blue', ls='--', label='A0 (aj)' if i == 0 else "")
                 ax_v.axvline(da1, color='orange', ls='--', label='A1 (aj)' if i == 0 else "")
                 ax_v.axvline(da2, color='green',  ls='--', label='A2 (aj)' if i == 0 else "")
                 ax_v.axvline(da3, color='red', ls='--', label='A1 (aj)' if i == 0 else "")
