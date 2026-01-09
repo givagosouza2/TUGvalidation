@@ -102,7 +102,7 @@ with tab1:
             0.01,
             key="acc_dA1ap",
         )
-        #d_4 = st.number_input(
+        d_4 = st.number_input(
             "peak G3 (s)",
             0.0, 100.0,
             float(st.session_state["G3 peak"].get(sel_cycle, 0.0)),
